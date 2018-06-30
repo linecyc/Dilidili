@@ -1,4 +1,4 @@
-package com.linecy.dilidili.data.datasource
+package com.linecy.dilidili.data.datasource.repository
 
 import android.os.Handler
 import android.os.Message

@@ -1,9 +1,17 @@
 <resources>
   <string name="app_name">Dilidili</string>
+  <string name="app_detail">嘀哩嘀哩，这里是兴趣使然的无名小站（D站）_dilidili</string>
   <string name="bottom_nav_home">首页</string>
   <string name="bottom_nav_cartoon">番剧</string>
   <string name="bottom_nav_profile">我的</string>
 
   <string name="error_message">数据加载异常\n点击重试~</string>
   <string name="empty_message">没有数据额~</string>
+
+  <string name="search">搜索</string>
+  <string name="latest_update">最近更新</string>
+  <string name="di">第</string>
+  <string name="hua">话</string>
+
+  <string name="skip">跳过 ></string>
 </resources>

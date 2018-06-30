@@ -4,7 +4,7 @@ import javax.inject.Scope
 import kotlin.annotation.AnnotationRetention.RUNTIME
 
 /**
- * @author by linecy
+ * @author by linecy.
  */
 @Scope
 @Retention(RUNTIME)

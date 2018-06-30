@@ -1,7 +1,7 @@
-package com.linecy.dilidili.utils
+package com.linecy.dilidili.ui.misc
 
 /**
- * @author by linecy
+ * @author by linecy.
  */
 
 import android.app.Activity

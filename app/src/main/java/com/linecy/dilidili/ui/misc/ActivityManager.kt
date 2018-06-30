@@ -1,11 +1,11 @@
-package com.linecy.dilidili.utils
+package com.linecy.dilidili.ui.misc
 
 import android.app.Activity
 import java.lang.ref.WeakReference
 import java.util.ArrayList
 
 /**
- * @author by linecy
+ * @author by linecy.
  */
 class ActivityManager {
   private val activityWeakRef: MutableList<WeakReference<Activity>>

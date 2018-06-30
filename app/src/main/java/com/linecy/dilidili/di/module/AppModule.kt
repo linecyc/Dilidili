@@ -2,7 +2,10 @@ package com.linecy.dilidili.di.module
 
 import android.app.Application
 import android.content.Context
-import com.linecy.dilidili.utils.ActivityManager
+import com.linecy.dilidili.ui.misc.ActivityManager
+import com.linecy.module.core.rx.BackPressureRxBus
+import com.linecy.module.core.rx.RxBus
+import com.linecy.module.core.utils.Toaster
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -31,4 +34,21 @@ class AppModule(private val application: Application) {
     return application
   }
 
+  @Provides
+  @Singleton
+  fun provideToaster(): Toaster {
+    return Toaster(application)
+  }
+
+  @Provides
+  @Singleton
+  fun provideRxBus(): RxBus {
+    return RxBus()
+  }
+
+  @Provides
+  @Singleton
+  fun provideBackPressureRxBus(): BackPressureRxBus {
+    return BackPressureRxBus()
+  }
 }

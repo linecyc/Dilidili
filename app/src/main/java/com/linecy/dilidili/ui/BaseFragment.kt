@@ -9,18 +9,23 @@ import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.linecy.dilidili.R
 import com.linecy.dilidili.ui.widget.RollSquareView
 import com.linecy.module.core.mvp.BaseView
 import com.linecy.module.core.mvp.Presenter
 import com.linecy.module.core.mvp.RxPresenter
 import com.linecy.module.core.mvp.RxPresenterDelegate
+import com.linecy.module.core.utils.Toaster
 import dagger.android.support.AndroidSupportInjection
+import javax.inject.Inject
 
 /**
  * @author by linecy.
  */
 abstract class BaseFragment<VB : ViewDataBinding> : Fragment() {
 
+  @Inject
+  lateinit var toaster: Toaster
 
   private val rxPresenter = object : RxPresenter<BaseView>() {}
   private val rxPresenterDelegate = RxPresenterDelegate(rxPresenter)
@@ -28,9 +33,9 @@ abstract class BaseFragment<VB : ViewDataBinding> : Fragment() {
   private var dialog: AlertDialog? = null
   private lateinit var squareView: RollSquareView
 
-  @SuppressWarnings("unchecked")
-  protected fun delegatePresenter(presenter: Presenter<BaseView>, view: BaseView) {
-    rxPresenterDelegate.delegate(presenter)
+  @Suppress("UNCHECKED_CAST")
+  protected fun delegatePresenter(presenter: Presenter<*>, view: BaseView) {
+    rxPresenterDelegate.delegate(presenter as Presenter<BaseView>)
     rxPresenterDelegate.attach(view)
   }
 
@@ -90,21 +95,21 @@ abstract class BaseFragment<VB : ViewDataBinding> : Fragment() {
   }
 
   private fun loadingDialog() {
-//
-//    if (dialog == null) {
-//      val builder = AlertDialog.Builder(context, R.style.dialog)
-//      dialog = builder.create()
-//      val view = LayoutInflater.from(context).inflate(R.layout.layout_loading, null)
-//      squareView = view.findViewById(R.id.rollSquareView)
-//      squareView.visibility = View.VISIBLE
-//      dialog?.setView(view, 200, 200, 200, 200)
-//      dialog?.setCancelable(false)
-//      dialog?.show()
-//    } else {
-//      if (null != squareView && View.VISIBLE != squareView.getVisibility()) {
-//        squareView.visibility = View.VISIBLE
-//      }
-//      dialog?.show()
-//    }
+
+    if (dialog == null) {
+      val builder = AlertDialog.Builder(context!!, R.style.dialog)
+      dialog = builder.create()
+      val view = LayoutInflater.from(context).inflate(R.layout.layout_loading, null)
+      squareView = view.findViewById(R.id.rollSquareView)
+      squareView.visibility = View.VISIBLE
+      dialog?.setView(view, 200, 200, 200, 200)
+      dialog?.setCancelable(false)
+      dialog?.show()
+    } else {
+      if (null != squareView && View.VISIBLE != squareView.getVisibility()) {
+        squareView.visibility = View.VISIBLE
+      }
+      dialog?.show()
+    }
   }
 }

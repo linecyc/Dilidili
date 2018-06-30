@@ -13,7 +13,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.AnimationUtils;
@@ -21,9 +20,8 @@ import android.view.animation.Interpolator;
 import com.linecy.dilidili.R;
 
 /**
- * @author by linecy
+ * @author by linecy.
  */
-
 public class RollSquareView extends View {
 
   private FixSquare[] mFixSquares;
@@ -80,7 +78,7 @@ public class RollSquareView extends View {
         typedArray.getResourceId(R.styleable.RollSquareView_roll_interpolator,
             android.R.anim.linear_interpolator);
     mRollInterpolator = AnimationUtils.loadInterpolator(context, rollInterpolatorResId);
-    int defaultColor = ContextCompat.getColor(context, R.color.colorPrimary);
+    int defaultColor = context.getResources().getColor(R.color.loading);
     mSquareColor = typedArray.getColor(R.styleable.RollSquareView_square_color, defaultColor);
     mSpeed = typedArray.getInteger(R.styleable.RollSquareView_roll_speed, 250);
     if (mLineCount < 2) {
@@ -98,16 +96,13 @@ public class RollSquareView extends View {
   }
 
   private boolean isInsideTheRect(int pos, int lineCount) {
-    if (pos < lineCount) {//是否第一行
-      return false;
-    } else if (pos > (lineCount * lineCount - 1 - lineCount)) {//是否最后一行
-      return false;
-    } else if ((pos + 1) % lineCount == 0) {//是否右边
-      return false;
-    } else if (pos % lineCount == 0) {//是否左边
-      return false;
-    }
-    return true;
+    //是否第一行
+    //是否最后一行
+    //是否右边
+    return pos >= lineCount
+        && pos <= (lineCount * lineCount - 1 - lineCount)
+        && (pos + 1) % lineCount != 0
+        && pos % lineCount != 0;
   }
 
   private void init() {
@@ -213,10 +208,8 @@ public class RollSquareView extends View {
       float height = leftTopRectF.height();
       float sqrt = (float) Math.sqrt(width * width + height * height);
       float extra = sqrt - width;
-      Rect dirtyRectF =
-          new Rect((int) (leftTopRectF.left - extra), (int) (leftTopRectF.top - extra),
-              (int) (rightBottomRectF.right + extra), (int) (rightBottomRectF.bottom + extra));
-      return dirtyRectF;
+      return new Rect((int) (leftTopRectF.left - extra), (int) (leftTopRectF.top - extra),
+          (int) (rightBottomRectF.right + extra), (int) (rightBottomRectF.bottom + extra));
     }
     return null;
   }
@@ -235,8 +228,8 @@ public class RollSquareView extends View {
     //确定第一个rect的位置
     float squareWidth = halfSquareWidth * 2;
     int lineCount = (int) Math.sqrt(fixSquares.length);
-    float firstRectLeft = 0;
-    float firstRectTop = 0;
+    float firstRectLeft;
+    float firstRectTop;
     if (lineCount % 2 == 0) {//偶数
       int squareCountInAline = lineCount / 2;
       int diviCountInAline = squareCountInAline - 1;
@@ -246,9 +239,8 @@ public class RollSquareView extends View {
       firstRectTop = cy - firstRectLeftTopFromCenter;
     } else {//奇数
       int squareCountInAline = lineCount / 2;
-      int diviCountInAline = squareCountInAline;
       float firstRectLeftTopFromCenter =
-          squareCountInAline * squareWidth + diviCountInAline * dividerWidth + halfSquareWidth;
+          squareCountInAline * squareWidth + squareCountInAline * dividerWidth + halfSquareWidth;
       firstRectLeft = cx - firstRectLeftTopFromCenter;
       firstRectTop = cy - firstRectLeftTopFromCenter;
     }
@@ -283,17 +275,17 @@ public class RollSquareView extends View {
     FixSquare currEmptyFixSquare = mFixSquares[mCurrEmptyPosition];
     FixSquare rollSquare = currEmptyFixSquare.next;
     AnimatorSet mAnimatorSet = new AnimatorSet();
-    ValueAnimator translateController =
+    ValueAnimator translateConrtroller =
         createTranslateValueAnimator(currEmptyFixSquare, rollSquare);
-    ValueAnimator rollController = createRollValueAnimator();
+    ValueAnimator rollConrtroller = createRollValueAnimator();
     mAnimatorSet.setInterpolator(mRollInterpolator);
-    mAnimatorSet.playTogether(translateController, rollController);
+    mAnimatorSet.playTogether(translateConrtroller, rollConrtroller);
     mAnimatorSet.addListener(new AnimatorListenerAdapter() {
       @Override public void onAnimationStart(Animator animation) {
         updateRollSquare();
         //让空square的next隐藏，现在FixSquares中那就是有两个隐藏了
         mFixSquares[mCurrEmptyPosition].next.isShow = false;
-        //然后滚动的square需要显示出来
+        //然后滚动的suqare需要显示出来
         mRollSquare.isShow = true;
       }
 
@@ -309,12 +301,8 @@ public class RollSquareView extends View {
         if (mIsReset) {
           mCurrEmptyPosition = mStartEmptyPosition;
           //重置所有的
-          //for (int i = 0; i < mFixSquares.length; i++) {
-          //  mFixSquares[i].isShow = true;
-          //}
-
-          for (FixSquare fixSquare : mFixSquares) {
-            fixSquare.isShow = true;
+          for (FixSquare mFixSquare : mFixSquares) {
+            mFixSquare.isShow = true;
           }
           mFixSquares[mCurrEmptyPosition].isShow = false;
           updateRollSquare();
@@ -456,7 +444,7 @@ public class RollSquareView extends View {
    * 如果不是左右运动那就是上下运动
    */
   private boolean isNextRollLeftOrRight(FixSquare currEmptyFixSquare, FixSquare rollSquare) {
-    return currEmptyFixSquare.rectF.left - rollSquare.rectF.left != 0;
+    return !(currEmptyFixSquare.rectF.left - rollSquare.rectF.left == 0);
   }
 
   @Override protected void onDraw(Canvas canvas) {
@@ -468,9 +456,9 @@ public class RollSquareView extends View {
     //        }
     //for test the rect invalidate
 
-    for (FixSquare fixSquare : mFixSquares) {
-      if (fixSquare.isShow) {
-        canvas.drawRoundRect(fixSquare.rectF, mFixRoundCornor, mFixRoundCornor, mPaint);
+    for (FixSquare mFixSquare : mFixSquares) {
+      if (mFixSquare.isShow) {
+        canvas.drawRoundRect(mFixSquare.rectF, mFixRoundCornor, mFixRoundCornor, mPaint);
       }
     }
     if (mRollSquare.isShow) {

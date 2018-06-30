@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+  <com.linecy.dilidili.ui.widget.RollSquareView
+      android:id="@+id/rollSquareView"
+      android:layout_width="80dp"
+      android:layout_height="80dp"
+      android:background="@android:color/transparent"
+      android:visibility="invisible"
+      app:fix_round_cornor="5"
+      app:half_rect_width="10dp"
+      app:is_clockwise="false"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:line_count="3"
+      app:rect_divier_width="5dp"
+      app:roll_interpolator="@android:anim/bounce_interpolator"
+      app:roll_round_cornor="5"
+      app:roll_speed="300"
+      app:square_color="@color/loading"
+      app:start_empty_position="3"
+      />
+</android.support.constraint.ConstraintLayout>

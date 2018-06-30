@@ -11,7 +11,6 @@ import com.linecy.dilidili.R
 import com.linecy.dilidili.R.layout
 import com.linecy.dilidili.databinding.ActivityMainBinding
 import com.linecy.dilidili.ui.BaseActivity
-import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_main.bottomNavigation
 import kotlinx.android.synthetic.main.activity_main.viewPager
 

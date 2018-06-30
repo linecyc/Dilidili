@@ -1,7 +1,7 @@
 package com.linecy.module.core.utils
 
 /**
- * @author linecy.
+ * @author by linecy.
  */
 object Preconditions {
 

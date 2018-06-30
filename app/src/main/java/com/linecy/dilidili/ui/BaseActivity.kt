@@ -4,8 +4,10 @@ import android.databinding.DataBindingUtil
 import android.databinding.ViewDataBinding
 import android.os.Bundle
 import android.support.annotation.StringRes
+import android.support.constraint.ConstraintLayout
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.ViewGroup
@@ -15,34 +17,38 @@ import android.widget.TextView
 import android.widget.Toast
 import com.linecy.dilidili.R
 import com.linecy.dilidili.databinding.LayoutBaseBinding
+import com.linecy.dilidili.ui.misc.AppContainer
 import com.linecy.dilidili.ui.widget.RollSquareView
-import com.linecy.dilidili.utils.AppContainer
 import com.linecy.module.core.mvp.BaseView
 import com.linecy.module.core.mvp.Presenter
 import com.linecy.module.core.mvp.RxPresenter
 import com.linecy.module.core.mvp.RxPresenterDelegate
+import com.linecy.module.core.utils.Toaster
 import dagger.android.AndroidInjection
+import javax.inject.Inject
 
 /**
  * @author by linecy.
  */
 abstract class BaseActivity<VB : ViewDataBinding> : AppCompatActivity(), OnClickListener {
 
+  @Inject
+  lateinit var toaster: Toaster
 
   private val rxPresenter = object : RxPresenter<BaseView>() {}
   private val rxPresenterDelegate = RxPresenterDelegate(rxPresenter)
   protected lateinit var mDataBinding: VB
   private var mBaseBinding: LayoutBaseBinding? = null
-  private var mToolbar: RelativeLayout? = null
+  private var mToolbar: ConstraintLayout? = null
   private var mTvTitle: TextView? = null
   private var mIbHomeAsUp: ImageButton? = null
 
   private var dialog: AlertDialog? = null
   private lateinit var squareView: RollSquareView
 
-
-  protected fun delegatePresenter(presenter: Presenter<BaseView>, view: BaseView) {
-    rxPresenterDelegate.delegate(presenter)
+  @Suppress("UNCHECKED_CAST")
+  protected fun delegatePresenter(presenter: Presenter<*>, view: BaseView) {
+    rxPresenterDelegate.delegate(presenter as Presenter<BaseView>)
     rxPresenterDelegate.attach(view)
   }
 
@@ -51,7 +57,7 @@ abstract class BaseActivity<VB : ViewDataBinding> : AppCompatActivity(), OnClick
   protected abstract fun onInitView(savedInstanceState: Bundle?)
 
 
-   override fun onCreate(savedInstanceState: Bundle?) {
+  override fun onCreate(savedInstanceState: Bundle?) {
     AndroidInjection.inject(this)
     super.onCreate(savedInstanceState)
     setContentView(layoutResId())
@@ -105,6 +111,9 @@ abstract class BaseActivity<VB : ViewDataBinding> : AppCompatActivity(), OnClick
   protected fun hideToolBar() {
     mToolbar?.visibility = View.GONE
   }
+  protected fun showToolBar() {
+    mToolbar?.visibility = View.VISIBLE
+  }
 
   protected fun setDisplayHomeAsUp(show: Boolean) {
     mIbHomeAsUp?.visibility = if (show) View.VISIBLE else View.GONE
@@ -133,23 +142,23 @@ abstract class BaseActivity<VB : ViewDataBinding> : AppCompatActivity(), OnClick
   }
 
   private fun loadingDialog() {
-//    if (!this.isFinishing) {
-//      if (dialog == null) {
-//        val builder = AlertDialog.Builder(this, R.style.dialog)
-//        dialog = builder.create()
-//        val view = LayoutInflater.from(this).inflate(R.layout.layout_loading, null)
-//        squareView = view.findViewById(R.id.rollSquareView)
-//        squareView.visibility = View.VISIBLE
-//        dialog?.setView(view, 200, 0, 200, 0)
-//        dialog?.setCancelable(false)
-//        dialog?.show()
-//      } else {
-//        if (null != squareView && View.VISIBLE != squareView.visibility) {
-//          squareView.visibility = View.VISIBLE
-//        }
-//        dialog?.show()
-//      }
-//    }
+    if (!this.isFinishing) {
+      if (dialog == null) {
+        val builder = AlertDialog.Builder(this, R.style.dialog)
+        dialog = builder.create()
+        val view = LayoutInflater.from(this).inflate(R.layout.layout_loading, null)
+        squareView = view.findViewById(R.id.rollSquareView)
+        squareView.visibility = View.VISIBLE
+        dialog?.setView(view, 200, 0, 200, 0)
+        dialog?.setCancelable(false)
+        dialog?.show()
+      } else {
+        if (null != squareView && View.VISIBLE != squareView.visibility) {
+          squareView.visibility = View.VISIBLE
+        }
+        dialog?.show()
+      }
+    }
   }
 
 }

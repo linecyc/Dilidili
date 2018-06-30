@@ -9,5 +9,6 @@
     <item name="android:textSize">16.0sp</item>
     <item name="android:textColor">@color/textDarkGray</item>
     <item name="android:windowBackground">@color/background</item>
+    <item name="toolbarStyle">@style/ClubToolbar</item>
   </style>
 </resources>

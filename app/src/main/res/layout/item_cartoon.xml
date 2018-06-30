@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+  <data>
+    <variable
+        name="itemCartoon"
+        type="com.linecy.dilidili.data.model.Cartoon"
+        />
+    <variable
+        name="eventHandling"
+        type="com.linecy.dilidili.ui.misc.EventHandling"
+        />
+  </data>
+  <android.support.constraint.ConstraintLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:onClick="@{(v) -> eventHandling.onCartoonClick(v, itemCartoon)}"
+      android:padding="@dimen/padding_smaller"
+      tools:ignore="ContentDescription"
+      >
+
+    <ImageView
+        android:id="@+id/ivCover"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="fitXY"
+        app:layout_constraintDimensionRatio="H,16:9"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        loadPicture="@{itemCartoon.coverUrl}"
+        tools:srcCompat="@drawable/ic_launcher_background"
+        />
+    <TextView
+        android:id="@+id/tvLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:maxLines="2"
+        android:paddingBottom="@dimen/padding_extreme_small"
+        android:paddingTop="@dimen/padding_extreme_small"
+        android:textColor="@color/textSecondary"
+        android:textSize="@dimen/font_smallest"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@id/ivCover"
+        app:layout_constraintTop_toBottomOf="@+id/ivCover"
+        showLabel="@{itemCartoon}"
+        tools:text="已完结"
+        />
+
+
+  </android.support.constraint.ConstraintLayout>
+</layout>

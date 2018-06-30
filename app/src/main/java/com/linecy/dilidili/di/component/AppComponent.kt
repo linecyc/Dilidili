@@ -4,7 +4,7 @@ import com.linecy.dilidili.DiliApplication
 import com.linecy.dilidili.di.module.ActivityModule
 import com.linecy.dilidili.di.module.AppModule
 import com.linecy.dilidili.di.module.FragmentModule
-import com.linecy.dilidili.utils.ActivityManager
+import com.linecy.dilidili.ui.misc.ActivityManager
 import dagger.Component
 import dagger.android.AndroidInjectionModule
 import dagger.android.support.AndroidSupportInjectionModule

@@ -1,0 +1,13 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+  <item android:drawable="@color/colorPrimaryDark"/>
+  <item
+      android:bottom="4dp"
+      android:left="4dp"
+      android:right="4dp"
+      android:top="4dp">
+    <shape >
+      <corners android:radius="6dp"/>
+      <solid android:color="@color/hintColor"/>
+    </shape>
+  </item>
+</layer-list>

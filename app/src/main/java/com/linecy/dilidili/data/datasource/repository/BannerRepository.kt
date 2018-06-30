@@ -1,4 +1,4 @@
-package com.linecy.dilidili.data.datasource
+package com.linecy.dilidili.data.datasource.repository
 
 import io.reactivex.Observable
 import org.jsoup.nodes.Document
@@ -6,7 +6,7 @@ import org.jsoup.nodes.Document
 /**
  * @author by linecy.
  */
-interface HomeRepository {
+interface BannerRepository {
 
   fun getBanners(): Observable<Document>
 
