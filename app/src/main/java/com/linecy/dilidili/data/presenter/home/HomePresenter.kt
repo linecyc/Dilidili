@@ -5,11 +5,12 @@ import com.linecy.dilidili.data.datasource.repository.BannerRepository
 import com.linecy.dilidili.data.datasource.repository.CartoonRepository
 import com.linecy.dilidili.data.model.Banner
 import com.linecy.dilidili.data.model.Cartoon
-import com.linecy.dilidili.data.model.HomeDataModel
+import com.linecy.dilidili.data.model.HomeData
 import com.linecy.dilidili.data.service.DiliApi
 import com.linecy.module.core.mvp.RxPresenter
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import java.util.regex.Pattern
@@ -34,12 +35,14 @@ class HomePresenter @Inject constructor(
 
     baseView?.showLoading()
     disposables.add(Observable.zip(loadBanner(), loadLatest(),
-        io.reactivex.functions.BiFunction<List<Banner>, List<Cartoon>, HomeDataModel> { banners, cartoons ->
-          HomeDataModel(banners, cartoons)
+        BiFunction<List<Banner>, List<Cartoon>, HomeData> { banners, cartoons ->
+          HomeData(banners, cartoons)
         }).subscribeOn(
         Schedulers.io())
         .observeOn(
             AndroidSchedulers.mainThread()).subscribe({
+          isLoading = false
+          baseView?.hideLoading()
           baseView?.showBannerList(it.banners)
           baseView?.showCartoonList(it.cartoons)
 
@@ -48,10 +51,6 @@ class HomePresenter @Inject constructor(
           baseView?.hideLoading()
           baseView?.showError()
           Timber.e("Error------>>:$it")
-
-        }, {
-          isLoading = false
-          baseView?.hideLoading()
 
         }))
   }

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+  <data>
+    <variable
+        name="itemCartoonCategory"
+        type="com.linecy.dilidili.data.model.Category"
+        />
+    <variable
+        name="eventHandling"
+        type="com.linecy.dilidili.ui.misc.EventHandling"
+        />
+  </data>
+  <android.support.constraint.ConstraintLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_margin="@dimen/margin_smallest"
+      android:background="@drawable/round_corner_bg_white"
+      android:onClick="@{(v) -> eventHandling.onCartoonCategoryClick(v, itemCartoonCategory)}"
+      android:padding="@dimen/padding_smallest"
+      tools:ignore="ContentDescription"
+      >
+
+    <ImageView
+        android:id="@+id/ivCover"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="fitXY"
+        app:layout_constraintDimensionRatio="H,1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        loadPicture="@{itemCartoonCategory.icon}"
+        tools:srcCompat="@drawable/ic_launcher_background"
+        />
+    <TextView
+        android:id="@+id/tvLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_smallest"
+        android:gravity="center"
+        android:maxLines="2"
+        android:text="@{itemCartoonCategory.title}"
+        android:textColor="@color/textSecondary"
+        android:textSize="@dimen/font_smallest"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/ivCover"
+        app:layout_constraintTop_toBottomOf="@+id/ivCover"
+        tools:text="琴之森"
+        />
+  </android.support.constraint.ConstraintLayout>
+
+</layout>

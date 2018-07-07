@@ -3,9 +3,11 @@ package com.linecy.dilidili.ui.home
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
+import android.support.v4.content.ContextCompat
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.view.View
 import com.linecy.dilidili.R
 import com.linecy.dilidili.data.model.Banner
 import com.linecy.dilidili.data.model.Cartoon
@@ -14,6 +16,7 @@ import com.linecy.dilidili.data.presenter.home.HomePresenter
 import com.linecy.dilidili.data.presenter.home.HomeView
 import com.linecy.dilidili.databinding.FragmentHomeBinding
 import com.linecy.dilidili.ui.BaseFragment
+import com.linecy.dilidili.ui.SearchActivity
 import com.linecy.dilidili.ui.home.adapter.CartoonAdapter
 import com.linecy.dilidili.ui.misc.ViewContainer
 import com.linecy.dilidili.ui.play.PlayActivity
@@ -21,9 +24,12 @@ import com.linecy.dilidili.utils.GlideImageLoader
 import com.youth.banner.BannerConfig
 import kotlinx.android.synthetic.main.fragment_home.appBarLayout
 import kotlinx.android.synthetic.main.fragment_home.bannerView
+import kotlinx.android.synthetic.main.fragment_home.fab
 import kotlinx.android.synthetic.main.fragment_home.recyclerView
 import kotlinx.android.synthetic.main.fragment_home.swipeLayout
+import kotlinx.android.synthetic.main.fragment_home.tvTitle
 import kotlinx.android.synthetic.main.fragment_home.viewContainer
+import kotlinx.android.synthetic.main.layout_search.btnSearch
 import javax.inject.Inject
 
 class HomeFragment : BaseFragment<FragmentHomeBinding>(), HomeView,
@@ -35,6 +41,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(), HomeView,
   private lateinit var adapter: CartoonAdapter
   private var isFirstVisible = true
   private var isNotOffset = true
+  private var bannerHeight = 0
 
   override fun layoutResId(): Int {
     return R.layout.fragment_home
@@ -71,8 +78,17 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(), HomeView,
 
       }
     })
+    fab.setOnClickListener {
+      recyclerView.scrollToPosition(0)
+    }
+    fab.visibility = View.INVISIBLE
+    fab.isEnabled = false
+
+    btnSearch.setOnClickListener {
+      startActivity(Intent(context, SearchActivity::class.java))
+    }
     viewContainer.setOnReloadCallBack(this)
-    onRefresh()
+    presenter.getHomeData()
   }
 
 
@@ -82,7 +98,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(), HomeView,
   }
 
   override fun onRefresh() {
-    viewContainer.setDisplayedChildId(R.id.swipeLayout)
     presenter.getHomeData()
   }
 
@@ -93,6 +108,19 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(), HomeView,
   override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {
     isNotOffset = verticalOffset == 0
     swipeLayout.isEnabled = isFirstVisible && isNotOffset
+
+    val primary = ContextCompat.getColor(context!!, R.color.colorPrimaryDark)
+    val white = ContextCompat.getColor(context!!, R.color.white)
+    if (bannerHeight == 0) {
+      bannerHeight = bannerView.height
+    }
+    if (verticalOffset + bannerHeight == 0) {
+      tvTitle.setBackgroundColor(primary)
+      tvTitle.setTextColor(white)
+    } else {
+      tvTitle.setBackgroundColor(white)
+      tvTitle.setTextColor(primary)
+    }
   }
 
   override fun showBannerList(banners: List<Banner>?) {
@@ -128,4 +156,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(), HomeView,
     intent.putExtra(PlayActivity.EXTRA_CARTOON, playDetail)
     startActivity(intent)
   }
+
+
 }

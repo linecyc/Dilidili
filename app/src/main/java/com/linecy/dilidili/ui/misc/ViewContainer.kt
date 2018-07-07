@@ -9,6 +9,8 @@ import android.widget.TextView
 import com.linecy.dilidili.R
 
 /**
+ * 空数据、错误、正常三页面切换控制器。
+ * 增加一个layout_null页面用于初始化展示，优化UI
  * @author by linecy.
  */
 class ViewContainer(context: Context, attrs: AttributeSet?) : BatterViewAnimator(
@@ -33,8 +35,14 @@ class ViewContainer(context: Context, attrs: AttributeSet?) : BatterViewAnimator
 
   override fun onFinishInflate() {
     super.onFinishInflate()
-    findViewById<ConstraintLayout>(R.id.error).setOnClickListener { onReloadCallBack?.onReload() }
-    findViewById<ConstraintLayout>(R.id.empty).setOnClickListener { onEmptyCallback?.onEmpty() }
+    findViewById<ConstraintLayout>(R.id.error).setOnClickListener {
+      setDisplayedChildId(R.id.layoutNull)
+      onReloadCallBack?.onReload()
+    }
+    findViewById<ConstraintLayout>(R.id.empty).setOnClickListener {
+      setDisplayedChildId(R.id.layoutNull)
+      onEmptyCallback?.onEmpty()
+    }
   }
 
   /**

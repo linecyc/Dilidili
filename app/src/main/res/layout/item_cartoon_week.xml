@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+  <data>
+    <variable
+        name="itemCartoonWeek"
+        type="com.linecy.dilidili.data.model.Cartoon"
+        />
+    <variable
+        name="eventHandling"
+        type="com.linecy.dilidili.ui.misc.EventHandling"
+        />
+  </data>
+  <android.support.v7.widget.CardView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_margin="10dp"
+      app:cardCornerRadius="6dp"
+      >
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/round_corner_bg_white"
+        android:onClick="@{(v) -> eventHandling.onCartoonClick(v, itemCartoonWeek)}"
+        tools:ignore="ContentDescription"
+        >
+
+      <ImageView
+          android:id="@+id/ivCover"
+          android:layout_width="0dp"
+          android:layout_height="0dp"
+          android:scaleType="fitXY"
+          app:layout_constraintDimensionRatio="H,1:1"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent"
+          loadHalfRoundPicture="@{itemCartoonWeek.coverUrl}"
+          tools:srcCompat="@drawable/ic_launcher_background"
+          />
+      <TextView
+          android:id="@+id/tvLabel"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="8dp"
+          android:layout_marginEnd="8dp"
+          android:layout_marginStart="8dp"
+          android:layout_marginTop="8dp"
+          android:maxLines="2"
+          android:paddingBottom="@dimen/margin_extra_small"
+          android:text="@{itemCartoonWeek.currentTitle}"
+          android:textColor="@color/textSecondary"
+          android:textSize="@dimen/font_smallest"
+          android:textStyle="bold"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="@id/ivCover"
+          app:layout_constraintTop_toBottomOf="@+id/ivCover"
+          tools:text="琴之森"
+          />
+    </android.support.constraint.ConstraintLayout>
+
+  </android.support.v7.widget.CardView>
+</layout>

@@ -55,26 +55,45 @@
 
           </android.support.design.widget.CollapsingToolbarLayout>
           <TextView
+              android:id="@+id/tvTitle"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:background="@color/white"
+              android:drawableLeft="@drawable/bangumi_follow_home_ic_timeline"
+              android:drawablePadding="@dimen/padding_extra_small"
+              android:drawableStart="@drawable/bangumi_follow_home_ic_timeline"
+              android:gravity="center_vertical"
               android:paddingBottom="@dimen/padding_smaller"
-              android:paddingLeft="@dimen/padding_normal"
-              android:paddingRight="@dimen/padding_normal"
+              android:paddingLeft="@dimen/padding_small_normal"
+              android:paddingRight="@dimen/padding_small_normal"
               android:paddingTop="@dimen/padding_smaller"
               android:text="@string/latest_update"
               android:textColor="@color/colorPrimary"
+              tools:ignore="RtlHardcoded"
               />
         </android.support.design.widget.AppBarLayout>
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/padding_smaller"
-            android:paddingRight="@dimen/padding_smaller"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             />
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="16dp"
+            android:backgroundTint="@color/white"
+            android:src="@drawable/back_to_top"
+
+            app:fabSize="mini"
+            app:layout_behavior="@string/scroll_top_behavior"
+            app:layout_scrollFlags="scroll|enterAlways|snap"
+            />
+
       </android.support.design.widget.CoordinatorLayout>
     </android.support.v4.widget.SwipeRefreshLayout>
   </com.linecy.dilidili.ui.misc.ViewContainer>
+
 </layout>

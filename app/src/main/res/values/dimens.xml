@@ -28,6 +28,7 @@
   <dimen name="padding_normal">16dip</dimen>
   <dimen name="padding_little_small">14dip</dimen>
   <dimen name="padding_small">12dip</dimen>
+  <dimen name="padding_small_normal">10dip</dimen>
   <dimen name="padding_smaller">8dip</dimen>
   <dimen name="padding_smallest">6dip</dimen>
   <dimen name="padding_extra_small">4dip</dimen>
@@ -35,6 +36,7 @@
 
   <dimen name="divider">1dp</dimen>
   <dimen name="indicator">2dp</dimen>
+  <dimen name="radius_6">6dp</dimen>
 
 
   <dimen name="font_extra_small">10sp</dimen>

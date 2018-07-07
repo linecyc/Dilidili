@@ -6,6 +6,8 @@ buildscript {
     ext.daggerVersion = '2.16'
     ext.rxJava2Version = '2.1.14'
     ext.rxandroid2Version = '2.0.1'
+    ext.ijkplayer = '0.8.8'
+    ext.glide = '4.7.1'
 
     repositories {
         google()

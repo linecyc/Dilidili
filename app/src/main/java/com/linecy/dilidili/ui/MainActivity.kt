@@ -1,4 +1,4 @@
-package com.linecy.dilidili.ui.home
+package com.linecy.dilidili.ui
 
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
@@ -10,10 +10,15 @@ import android.view.MenuItem
 import com.linecy.dilidili.R
 import com.linecy.dilidili.R.layout
 import com.linecy.dilidili.databinding.ActivityMainBinding
-import com.linecy.dilidili.ui.BaseActivity
+import com.linecy.dilidili.ui.account.ProfileFragment
+import com.linecy.dilidili.ui.cartoon.CartoonFragment
+import com.linecy.dilidili.ui.home.HomeFragment
 import kotlinx.android.synthetic.main.activity_main.bottomNavigation
 import kotlinx.android.synthetic.main.activity_main.viewPager
 
+/**
+ * app主页
+ */
 class MainActivity : BaseActivity<ActivityMainBinding>() {
 
   private var menuItem: MenuItem? = null
@@ -31,7 +36,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     list.add(CartoonFragment())
     list.add(ProfileFragment())
 
-    viewPager.adapter = FragmentAdapter(supportFragmentManager, list)
+    viewPager.adapter = FragmentAdapter(supportFragmentManager,
+        list)
     viewPager.offscreenPageLimit = 2
     initListener()
   }

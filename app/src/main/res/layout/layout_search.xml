@@ -36,7 +36,7 @@
       android:layout_marginBottom="6dp"
       android:layout_marginEnd="6dp"
       android:layout_marginTop="6dp"
-      android:background="@drawable/round_corner_bg_primary"
+      android:background="@drawable/round_corner_bg_white_pressed_primary"
       android:text="@string/search"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"

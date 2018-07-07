@@ -13,43 +13,51 @@
         type="com.linecy.dilidili.ui.misc.EventHandling"
         />
   </data>
-  <android.support.constraint.ConstraintLayout
+  <android.support.v7.widget.CardView
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:onClick="@{(v) -> eventHandling.onCartoonClick(v, itemCartoon)}"
-      android:padding="@dimen/padding_smaller"
-      tools:ignore="ContentDescription"
+      android:layout_margin="@dimen/margin_small_normal"
+      app:cardCornerRadius="@dimen/radius_6"
       >
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/round_corner_bg_white"
+        android:onClick="@{(v) -> eventHandling.onCartoonClick(v, itemCartoon)}"
+        tools:ignore="ContentDescription"
+        >
 
-    <ImageView
-        android:id="@+id/ivCover"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:scaleType="fitXY"
-        app:layout_constraintDimensionRatio="H,16:9"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        loadPicture="@{itemCartoon.coverUrl}"
-        tools:srcCompat="@drawable/ic_launcher_background"
-        />
-    <TextView
-        android:id="@+id/tvLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:maxLines="2"
-        android:paddingBottom="@dimen/padding_extreme_small"
-        android:paddingTop="@dimen/padding_extreme_small"
-        android:textColor="@color/textSecondary"
-        android:textSize="@dimen/font_smallest"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@id/ivCover"
-        app:layout_constraintTop_toBottomOf="@+id/ivCover"
-        showLabel="@{itemCartoon}"
-        tools:text="已完结"
-        />
+      <ImageView
+          android:id="@+id/ivCover"
+          android:layout_width="0dp"
+          android:layout_height="0dp"
+          android:scaleType="fitXY"
+          app:layout_constraintDimensionRatio="H,16:9"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent"
+          loadHalfRoundPicture="@{itemCartoon.coverUrl}"
+          tools:srcCompat="@drawable/ic_launcher_background"
+          />
+      <TextView
+          android:id="@+id/tvLabel"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="@dimen/margin_extra_small"
+          android:layout_marginTop="@dimen/margin_normal"
+          android:maxLines="2"
+          android:paddingBottom="@dimen/margin_extra_small"
+          android:textColor="@color/textSecondary"
+          android:textSize="@dimen/font_smallest"
+          android:textStyle="bold"
+          app:layout_constraintStart_toStartOf="@id/ivCover"
+          app:layout_constraintTop_toBottomOf="@+id/ivCover"
+          showLabel="@{itemCartoon}"
+          tools:text="已完结"
+          />
 
 
-  </android.support.constraint.ConstraintLayout>
+    </android.support.constraint.ConstraintLayout>
+
+  </android.support.v7.widget.CardView>
 </layout>

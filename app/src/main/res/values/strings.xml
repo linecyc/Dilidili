@@ -1,5 +1,5 @@
 <resources>
-  <string name="app_name">Dilidili</string>
+  <string name="app_name">嘀哩嘀哩</string>
   <string name="app_detail">嘀哩嘀哩，这里是兴趣使然的无名小站（D站）_dilidili</string>
   <string name="bottom_nav_home">首页</string>
   <string name="bottom_nav_cartoon">番剧</string>
@@ -14,4 +14,20 @@
   <string name="hua">话</string>
 
   <string name="skip">跳过 ></string>
+  <string name="cartoon_time_list">时间表</string>
+  <string name="cartoon_category_list">频道</string>
+  <string name="cartoon_category_header">按类别</string>
+  <string name="cartoon_time_header">按时间</string>
+
+  <!-- scroll to top behavior-->
+  <string name="scroll_top_behavior">com.linecy.dilidili.ui.misc.ScrollTopBehavior</string>
+
+  <!-- weekday-->
+  <string name="weekday7">日</string>
+  <string name="weekday1">一</string>
+  <string name="weekday2">二</string>
+  <string name="weekday3">三</string>
+  <string name="weekday4">四</string>
+  <string name="weekday5">五</string>
+  <string name="weekday6">六</string>
 </resources>

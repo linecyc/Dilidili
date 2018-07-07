@@ -4,7 +4,6 @@ import com.linecy.dilidili.data.datasource.repository.CartoonRepository
 import com.linecy.dilidili.data.model.Cartoon
 import com.linecy.dilidili.data.model.PlayDetail
 import com.linecy.module.core.mvp.RxPresenter
-import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
@@ -97,48 +96,4 @@ class PlayPresenter @Inject constructor(
           baseView?.hideLoading()
         }))
   }
-
-  /**
-   *获取每周数据列表
-   */
-  fun getWeekCartoon() {
-
-    disposables.add(cartoonRepository.getWeekCartoon().flatMap {
-      val week = it.select("div.change div.sldr ul.wrp")[0].select("div.book")
-      val list = ArrayList<ArrayList<Cartoon>>(week.size)
-      Timber.i("week-------->>${week.size}")
-      for (i in 0 until week.size) {
-        val arr = ArrayList<Cartoon>()
-        val ele = week[i].select("a")
-        Timber.i(ele.toString())
-        ele.forEach {
-          val p = it.select("figcaption p")
-
-          if (p.size > 1) {
-            arr.add(
-                Cartoon(title = it.attr("title"), coverUrl = it.selectFirst("img").attr("src"),
-                    latest = p[1].text(), currentTitle = p[0].text(), playDetail = it.attr("href")))
-          } else {
-            arr.add(
-                Cartoon(title = it.attr("title"), coverUrl = it.selectFirst("img").attr("src"),
-                    latest = "", currentTitle = p[0].text(), playDetail = it.attr("href")))
-          }
-        }
-        list.add(arr)
-      }
-      Observable.just(list)
-    }.subscribeOn(Schedulers.io())
-        .observeOn(
-            AndroidSchedulers.mainThread()).subscribe({
-          Timber.e("Next------>>:$it")
-        }, {
-          baseView?.hideLoading()
-
-          Timber.e("Error------>>:$it")
-
-        }, {
-          baseView?.hideLoading()
-        }))
-  }
-
 }

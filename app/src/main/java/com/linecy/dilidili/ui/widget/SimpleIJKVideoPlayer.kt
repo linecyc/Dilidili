@@ -13,6 +13,8 @@ import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.widget.FrameLayout
+import android.widget.SeekBar
+import android.widget.SeekBar.OnSeekBarChangeListener
 import com.linecy.dilidili.ui.misc.ijk.IMediaController
 import timber.log.Timber
 import tv.danmaku.ijk.media.player.IMediaPlayer
@@ -67,6 +69,10 @@ class SimpleIJKVideoPlayer : FrameLayout {
   //视频控制按钮层
   private var controlView: IMediaController? = null
 
+
+  //seekBar
+  private var seekBar: SeekBar? = null
+
   //控制按钮层是否显示中
   private var isShowing: Boolean = true
 
@@ -103,6 +109,9 @@ class SimpleIJKVideoPlayer : FrameLayout {
   //记录切换、销毁等情况下的播放进度
   var realCurrent: Long = currentPosition
 
+  //记录seekBar是否处于用户拖动状态(not的话少取一次非运算)
+  var isNotDragSeekBar = true
+
   companion object {
     //播放器状态
     const val STATE_ERROR = -1//错误
@@ -132,15 +141,18 @@ class SimpleIJKVideoPlayer : FrameLayout {
         if (null != player) {
           when (msg?.what) {
             MSG_SEEK_STATE -> {
-              if (player.playState == STATE_PLAY && player.mMediaPlayer?.isPlaying!!) {
+              if (player.playState == STATE_PLAY && player.mMediaPlayer?.isPlaying!! && player.isNotDragSeekBar) {
                 removeMessages(MSG_SEEK_STATE)
                 sendEmptyMessageDelayed(MSG_SEEK_STATE, 1000)
-                player.controlView?.onSeekUpdate(player.currentPosition)
+                val current = (player.currentPosition / 1000).toInt()
+                player.seekBar?.progress = current
+                player.controlView?.onProgressChanged(player.seekBar, current, false,
+                    player.isShowing)
               }
             }
             MSG_PLAY_STATE -> {
-              if (player.playState == STATE_PLAY && player.isShowing) {
-                //默认显示5秒后自动隐藏
+              if (player.playState == STATE_PLAY && player.isShowing && player.isNotDragSeekBar) {
+                //默认显示5秒后自动隐藏,如果处于用户拖动状态，就不处理
                 removeMessages(MSG_DELAYED_HIDE)
                 sendEmptyMessageDelayed(MSG_DELAYED_HIDE, 5000)
               }
@@ -215,22 +227,15 @@ class SimpleIJKVideoPlayer : FrameLayout {
    * surfaceView的监听器
    */
   private inner class LmnSurfaceCallback : SurfaceHolder.Callback {
-    override fun surfaceCreated(holder: SurfaceHolder) {
-      Timber.i("player------->>surfaceCreated")
-
-    }
+    override fun surfaceCreated(holder: SurfaceHolder) {}
 
     override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
-      Timber.i("player------->>surfaceChanged:$currentPosition")
       realCurrent = currentPosition
       //surfaceview创建成功后，加载视频
       load()
     }
 
-    override fun surfaceDestroyed(holder: SurfaceHolder) {
-      Timber.i("player------->>surfaceDestroyed")
-
-    }
+    override fun surfaceDestroyed(holder: SurfaceHolder) {}
   }
 
   /**
@@ -346,12 +351,48 @@ class SimpleIJKVideoPlayer : FrameLayout {
     return super.onTouchEvent(event)
   }
 
+
+  private fun setSeekBarListener() {
+    seekBar?.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
+      override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+        controlView?.onProgressChanged(seekBar, progress, fromUser, isShowing)
+      }
+
+      override fun onStartTrackingTouch(seekBar: SeekBar?) {
+        if (loopHandler.hasMessages(MSG_DELAYED_HIDE)) {
+          //避免拖动时seekBar消失
+          loopHandler.removeMessages(MSG_DELAYED_HIDE)
+        }
+        isNotDragSeekBar = false
+        controlView?.onStartTrackingTouch(seekBar)
+      }
+
+      override fun onStopTrackingTouch(seekBar: SeekBar?) {
+        onSeekTo((seekBar?.progress!! * 1000).toLong())
+        isNotDragSeekBar = true
+        loopHandler.sendEmptyMessageDelayed(MSG_DELAYED_HIDE, 5000)
+        controlView?.onStopTrackingTouch(seekBar)
+      }
+    })
+  }
+
+  /**
+   * 添加播放控制器
+   */
   fun setUpWithControlView(controlView: IMediaController?) {
     if (controlView == null) {
       throw IllegalArgumentException("Control view must not be null.")
     } else {
       this.controlView = controlView
     }
+  }
+
+  /**
+   * 添加seekBar
+   */
+  fun setUpWithSeekBar(seekBar: SeekBar) {
+    this.seekBar = seekBar
+    setSeekBarListener()
   }
 
 

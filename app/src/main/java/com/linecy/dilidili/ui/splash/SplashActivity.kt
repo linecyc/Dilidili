@@ -7,7 +7,7 @@ import android.view.WindowManager
 import com.linecy.dilidili.R
 import com.linecy.dilidili.databinding.ActivitySplashBinding
 import com.linecy.dilidili.ui.BaseActivity
-import com.linecy.dilidili.ui.home.MainActivity
+import com.linecy.dilidili.ui.MainActivity
 import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable

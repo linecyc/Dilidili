@@ -1,6 +1,7 @@
 package com.linecy.dilidili.di.module
 
-import com.linecy.dilidili.ui.home.MainActivity
+import com.linecy.dilidili.ui.MainActivity
+import com.linecy.dilidili.ui.SearchActivity
 import com.linecy.dilidili.ui.play.PlayActivity
 import com.linecy.dilidili.ui.splash.SplashActivity
 import dagger.Module
@@ -21,4 +22,8 @@ abstract class ActivityModule {
 
   @ContributesAndroidInjector
   abstract fun splashActivity(): SplashActivity
+
+
+  @ContributesAndroidInjector
+  abstract fun searchActivty(): SearchActivity
 }

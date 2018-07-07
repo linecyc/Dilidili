@@ -21,6 +21,7 @@ import com.linecy.dilidili.ui.misc.ijk.IMediaController
 import com.linecy.dilidili.ui.play.adapter.CartoonSetAdapter
 import com.linecy.dilidili.ui.play.adapter.CartoonSetAdapter.OnCartoonSetClickListener
 import com.linecy.dilidili.ui.widget.SimpleIJKVideoPlayer
+import com.linecy.dilidili.utils.TimeUtils
 import kotlinx.android.synthetic.main.activity_play.ivPlayLoading
 import kotlinx.android.synthetic.main.activity_play.layout_play_control
 import kotlinx.android.synthetic.main.activity_play.recyclerView
@@ -33,6 +34,10 @@ import kotlinx.android.synthetic.main.layout_play_control.ivMin
 import kotlinx.android.synthetic.main.layout_play_control.ivMore
 import kotlinx.android.synthetic.main.layout_play_control.ivPlayPause
 import kotlinx.android.synthetic.main.layout_play_control.seekBar
+import kotlinx.android.synthetic.main.layout_play_control.tvCurrent
+import kotlinx.android.synthetic.main.layout_play_control.tvDrag
+import kotlinx.android.synthetic.main.layout_play_control.tvDuration
+import kotlinx.android.synthetic.main.layout_play_control.tvTitle
 import timber.log.Timber
 import tv.danmaku.ijk.media.player.IjkMediaPlayer
 import javax.inject.Inject
@@ -41,7 +46,7 @@ import javax.inject.Inject
  * @author by linecy.
  */
 class PlayActivity : BaseActivity<ActivityPlayBinding>(), PlayView,
-    OnCartoonSetClickListener, IMediaController, SeekBar.OnSeekBarChangeListener {
+    OnCartoonSetClickListener, IMediaController {
 
   @Inject
   lateinit var playPresenter: PlayPresenter
@@ -66,24 +71,48 @@ class PlayActivity : BaseActivity<ActivityPlayBinding>(), PlayView,
     window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
     val cartoon = intent.getParcelableExtra<Cartoon>(EXTRA_CARTOON)
-    setDisplayHomeAsUp(true)
-    if (TextUtils.isEmpty(cartoon.title)) {
-      setToolbarTitle(cartoon.currentTitle!!)
-    } else {
-      setToolbarTitle(cartoon.title!!)
+//    setDisplayHomeAsUp(true)
+//    setTitle(cartoon)
+    hideToolBar()
+    val manager = GridLayoutManager(this, 2)
+    recyclerView.layoutManager = manager
+    manager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+      override fun getSpanSize(position: Int): Int {
+        return if (position == 0) manager.spanCount else 1
+      }
     }
-    recyclerView.layoutManager = GridLayoutManager(this, 2)
+
     adapter = CartoonSetAdapter(this)
     adapter.setOnCartoonSetClickListener(this)
     recyclerView.adapter = adapter
     videoPlayer.setUpWithControlView(this)
+    videoPlayer.setUpWithSeekBar(seekBar)
     IjkMediaPlayer.loadLibrariesOnce(null)
     IjkMediaPlayer.native_profileBegin("libijkplayer.so")
 
     setClickListener(ivMin, ivFull, ivPlayPause, ivMore, ivLock)
-    seekBar.setOnSeekBarChangeListener(this)
-
     playPresenter.getCartoon(cartoon.playDetail)
+  }
+
+
+  private fun setTitle(cartoon: Cartoon) {
+//    val title = if (TextUtils.isEmpty(cartoon.title)) {
+//      cartoon.currentTitle
+//    } else {
+//      cartoon.title
+//    }
+    if (!TextUtils.isEmpty(cartoon.title)) {
+      val arr = cartoon.title!!.split(" ")
+      when (arr.size) {
+        0 -> {
+        }
+        1 -> setToolbarTitle(cartoon.title)
+        else -> {
+          setToolbarTitle("${arr[0]} ${arr[1]}")
+        }
+
+      }
+    }
   }
 
   /**
@@ -104,8 +133,10 @@ class PlayActivity : BaseActivity<ActivityPlayBinding>(), PlayView,
         }
       }
       R.id.ivMin -> {
-        if (!ivLock.isSelected) {
+        if (ivMin.isSelected) {
           setFullScreen()
+        } else {
+          finish()
         }
       }
       R.id.ivPlayPause -> {
@@ -140,7 +171,7 @@ class PlayActivity : BaseActivity<ActivityPlayBinding>(), PlayView,
       } else {
         loadLoading(true)
         videoPlayer.setupWithUrl(playDetail.playUrl)
-
+        tvTitle.text = playDetail.title
       }
     }
   }
@@ -162,21 +193,28 @@ class PlayActivity : BaseActivity<ActivityPlayBinding>(), PlayView,
     playPresenter.getCartoon(cartoon.playDetail)
   }
 
-  override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {}
+  override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean,
+      isShowing: Boolean) {
+    if (fromUser) {
+      val s = TimeUtils.formatTime(progress)
+      if (!TextUtils.isEmpty(s))
+        if (tvDrag.visibility != View.VISIBLE) {
+          tvDrag.visibility = View.VISIBLE
+        }
+      tvDrag.text = s
+    } else {
+      if (isShowing) {
+        tvCurrent.text = TimeUtils.formatTime(seekBar?.progress!!)
+      }
+    }
+  }
 
   override fun onStartTrackingTouch(seekBar: SeekBar?) {}
 
   override fun onStopTrackingTouch(seekBar: SeekBar?) {
-    videoPlayer.onSeekTo((seekBar?.progress!! * 1000).toLong())
-  }
-
-  /**
-   * 更新进度条
-   */
-  override fun onSeekUpdate(seek: Long) {
-    seekBar.progress = (seek / 1000).toInt()
-    Timber.i("seekbar------------->>${seekBar.progress}")
-
+    if (tvDrag.visibility == View.VISIBLE) {
+      tvDrag.visibility = View.GONE
+    }
   }
 
   /**
@@ -191,12 +229,13 @@ class PlayActivity : BaseActivity<ActivityPlayBinding>(), PlayView,
       SimpleIJKVideoPlayer.STATE_PREPARED -> {
         loadLoading(false)
         ivPlayPause.isSelected = true
-        seekBar.max = (player?.duration!! / 1000).toInt()
-        Timber.i("seekbar------------->>${seekBar.max}")
       }
       SimpleIJKVideoPlayer.STATE_START, SimpleIJKVideoPlayer.STATE_PLAY -> {
         loadLoading(false)
         ivPlayPause.isSelected = true
+
+        seekBar.max = (player?.duration!! / 1000).toInt()
+        tvDuration.text = TimeUtils.formatTime(seekBar.max)
       }
       else -> {
         loadLoading(false)
@@ -252,6 +291,7 @@ class PlayActivity : BaseActivity<ActivityPlayBinding>(), PlayView,
    * 横竖屏切换
    */
   private fun setFullScreen() {
+    ivMin.isSelected = !ivMin.isSelected
     if (requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
       requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
       window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
@@ -260,7 +300,6 @@ class PlayActivity : BaseActivity<ActivityPlayBinding>(), PlayView,
       display.getSize(size)
       videoPlayer.layoutParams = ConstraintLayout.LayoutParams(size.x,
           (size.x * 9 / 16f).toInt())
-      showToolBar()
       recyclerView.visibility = View.VISIBLE
       groupFull.visibility = View.GONE
       groupMin.visibility = View.VISIBLE
@@ -269,7 +308,6 @@ class PlayActivity : BaseActivity<ActivityPlayBinding>(), PlayView,
       window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
       videoPlayer.layoutParams = ConstraintLayout.LayoutParams(
           ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT)
-      hideToolBar()
       recyclerView.visibility = View.GONE
       groupFull.visibility = View.VISIBLE
       groupMin.visibility = View.GONE

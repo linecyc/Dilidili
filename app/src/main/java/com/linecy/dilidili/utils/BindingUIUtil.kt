@@ -11,6 +11,7 @@ import com.linecy.dilidili.R
 import com.linecy.dilidili.data.model.Cartoon
 import com.linecy.dilidili.di.module.GlideApp
 import com.linecy.dilidili.ui.home.adapter.CartoonAdapter
+import com.linecy.dilidili.ui.misc.GlideHalfRoundTransform
 import com.linecy.dilidili.ui.misc.GlideRoundTransform
 import com.linecy.dilidili.ui.misc.LabelBackgroundSpan
 
@@ -37,6 +38,26 @@ object BindingUIUtil {
       GlideApp.with(imageView.context)
           .load(url)
           .transform(GlideRoundTransform())
+          .into(imageView)
+    }
+  }
+
+  @JvmStatic
+  @BindingAdapter("loadPicture")
+  fun setPicture(imageView: ImageView, url: Int) {
+    GlideApp.with(imageView.context)
+        .load(url)
+        .transform(GlideRoundTransform())
+        .into(imageView)
+  }
+
+  @JvmStatic
+  @BindingAdapter("loadHalfRoundPicture")
+  fun setHalfPicture(imageView: ImageView, url: String?) {
+    url?.let {
+      GlideApp.with(imageView.context)
+          .load(url)
+          .transform(GlideHalfRoundTransform())
           .into(imageView)
     }
   }

@@ -1,3 +1,7 @@
 <resources>
   <string name="app_name">module-core</string>
+  <string name="timeout_exception">未知主机，请检查您的网络</string>
+  <string name="undeliverable_exception">连接超时，请重试</string>
+  <string name="io_exception">数据解析异常，请稍后再试</string>
+  <string name="unknown_exception">系统异常，请稍后再试</string>
 </resources>

@@ -7,5 +7,5 @@ import kotlinx.android.parcel.Parcelize
  * @author by linecy.
  */
 @Parcelize
-data class HomeDataModel(val banners: List<Banner>,
+data class HomeData(val banners: List<Banner>,
     val cartoons: List<Cartoon>) : Parcelable
