@@ -1,6 +1,6 @@
 <resources>
   <string name="app_name">嘀哩嘀哩</string>
-  <string name="app_detail">嘀哩嘀哩，这里是兴趣使然的无名小站（D站）_dilidili</string>
+  <string name="app_detail">嘀哩嘀哩，这里是兴趣使然的无名小站</string>
   <string name="bottom_nav_home">首页</string>
   <string name="bottom_nav_cartoon">番剧</string>
   <string name="bottom_nav_profile">我的</string>
@@ -16,8 +16,8 @@
   <string name="skip">跳过 ></string>
   <string name="cartoon_time_list">时间表</string>
   <string name="cartoon_category_list">频道</string>
-  <string name="cartoon_category_header">按类别</string>
-  <string name="cartoon_time_header">按时间</string>
+  <string name="cartoon_category">按类别</string>
+  <string name="cartoon_category_time">按时间</string>
 
   <!-- scroll to top behavior-->
   <string name="scroll_top_behavior">com.linecy.dilidili.ui.misc.ScrollTopBehavior</string>
@@ -30,4 +30,32 @@
   <string name="weekday4">四</string>
   <string name="weekday5">五</string>
   <string name="weekday6">六</string>
+
+  <!--list-->
+  <string name="location">地区：</string>
+  <string name="year">年代：</string>
+  <string name="label">标签：</string>
+  <string name="state">状态：</string>
+  <string name="unknown">未知</string>
+  <string name="introduction">简介</string>
+  <string name="serials">剧集</string>
+  <string name="recommend">相关推荐</string>
+  <string name="focus">关注</string>
+
+  <!--player-->
+  <string name="play_next">即将为您播放下一话，请稍后</string>
+  <string name="play_last">当前已是最后一话</string>
+
+  <!-- search-->
+  <string name="search_hint">没有找到喜欢的？试试搜索~</string>
+  <string name="loading">加载中&#8230;</string>
+  <string name="no_more">没有更多了~</string>
+  <!-- profile-->
+  <string name="user_setting">个人中心</string>
+  <string name="player_setting">播放器设置</string>
+  <string name="about">关于</string>
+  <string name="exit_app">再按一次退出嘀哩嘀哩</string>
+
+  <!--setting-->
+  <string name="setting">设置</string>
 </resources>

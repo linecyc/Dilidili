@@ -8,17 +8,12 @@
         name="itemCartoonSet"
         type="com.linecy.dilidili.data.model.Cartoon"
         />
-    <variable
-        name="onCartoonSetClickListener"
-        type="com.linecy.dilidili.ui.play.adapter.CartoonSetAdapter.OnCartoonSetClickListener"
-        />
   </data>
   <android.support.constraint.ConstraintLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_margin="@dimen/margin_smaller"
-      android:background="@drawable/round_ring_bg_normal_primary_selector_red"
-      android:onClick="@{(v)->onCartoonSetClickListener.onCartoonSetClick(itemCartoonSet)}"
+      android:background="@drawable/bg_primary_select_black"
       >
     <TextView
         android:id="@+id/tvLabel"
@@ -29,8 +24,8 @@
         android:maxLines="1"
         android:paddingBottom="@dimen/padding_extreme_small"
         android:paddingTop="@dimen/padding_extreme_small"
-        android:text='@{@string/di+itemCartoonSet.latest+@string/hua}'
-        android:textColor="@color/textSecondary"
+        android:text='@{itemCartoonSet.latest+@string/hua}'
+        android:textColor="@color/text_black_select_gray"
         android:textSize="@dimen/font_smallest"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -38,7 +33,7 @@
         tools:text="第1话"
         />
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/tvTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -47,6 +42,7 @@
         android:layout_marginTop="8dp"
         android:maxLines="2"
         android:text="@{itemCartoonSet.currentTitle}"
+        android:textColor="@color/text_second_select_gray"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

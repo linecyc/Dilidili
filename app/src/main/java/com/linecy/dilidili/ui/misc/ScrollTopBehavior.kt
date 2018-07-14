@@ -27,19 +27,6 @@ class ScrollTopBehavior(context: Context,
   override fun onNestedScroll(coordinatorLayout: CoordinatorLayout, child: FloatingActionButton,
       target: View, dxConsumed: Int, dyConsumed: Int, dxUnconsumed: Int, dyUnconsumed: Int,
       type: Int) {
-//    if (dyConsumed > 0 && dyUnconsumed == 0) {
-//      Timber.i("上滑中。。。")
-//    }
-//    if (dyConsumed == 0 && dyUnconsumed > 0) {
-//      Timber.i("到边界了还在上滑。。。")
-//    }
-//    if (dyConsumed < 0 && dyUnconsumed == 0) {
-//      Timber.i("下滑中。。。")
-//    }
-//    if (dyConsumed == 0 && dyUnconsumed < 0) {
-//      Timber.i("到边界了，还在下滑。。。")
-//    }
-
     if (dyConsumed > 0 && dyUnconsumed == 0 && child.visibility != View.VISIBLE) {// 显示
       child.isEnabled = true
       child.show()

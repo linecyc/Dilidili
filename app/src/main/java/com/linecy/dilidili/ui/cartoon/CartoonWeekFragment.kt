@@ -1,5 +1,6 @@
 package com.linecy.dilidili.ui.cartoon
 
+import android.databinding.ViewDataBinding
 import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
 import android.view.View
@@ -8,7 +9,6 @@ import com.linecy.dilidili.R
 import com.linecy.dilidili.data.model.Cartoon
 import com.linecy.dilidili.data.presenter.cartoonWeek.CartoonWeekPresenter
 import com.linecy.dilidili.data.presenter.cartoonWeek.CartoonWeekView
-import com.linecy.dilidili.databinding.FragmentCartoonWeekBinding
 import com.linecy.dilidili.ui.BaseFragment
 import com.linecy.dilidili.ui.cartoon.adapter.CartoonWeekAdapter
 import com.linecy.dilidili.ui.misc.ViewContainer.OnReloadCallBack
@@ -28,7 +28,7 @@ import javax.inject.Inject
 /**
  * @author by linecy.
  */
-class CartoonWeekFragment : BaseFragment<FragmentCartoonWeekBinding>(),
+class CartoonWeekFragment : BaseFragment<ViewDataBinding>(),
     CartoonWeekView, OnClickListener, OnReloadCallBack {
 
 

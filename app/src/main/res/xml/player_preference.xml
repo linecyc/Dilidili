@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+  <SwitchPreference
+      android:key="auto_play_next"
+      android:summaryOff="@string/off"
+      android:summaryOn="@string/on"
+      android:title="@string/auto_play_next"/>
+  <SwitchPreference
+      android:key="hard_to_decode"
+      android:summaryOff="@string/off"
+      android:summaryOn="@string/on"
+      android:title="@string/hard_to_decode"/>
+
+  <ListPreference
+      android:entries="@array/speed_array"
+      android:entryValues="@array/speed_value_array"
+      android:key="@string/play_speed"
+      android:title="@string/play_speed"
+      />
+</PreferenceScreen>

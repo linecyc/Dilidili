@@ -25,6 +25,7 @@ class RxErrorHandler(private val toaster: Toaster, private val rxBus: RxBus?,
   }
 
   override fun accept(t: Throwable?) {
+    Timber.e(t)
     if (t != null) {
       when (t) {
         is SocketTimeoutException -> toaster.showText(R.string.timeout_exception)
@@ -32,7 +33,6 @@ class RxErrorHandler(private val toaster: Toaster, private val rxBus: RxBus?,
         is IOException -> toaster.showText(R.string.io_exception)
         else -> toaster.showText(R.string.unknown_exception)
       }
-      Timber.e("RxErrorHandler:$t")
     }
   }
 

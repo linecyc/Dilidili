@@ -29,7 +29,7 @@ abstract class BaseFragment<VB : ViewDataBinding> : Fragment() {
 
   private val rxPresenter = object : RxPresenter<BaseView>() {}
   private val rxPresenterDelegate = RxPresenterDelegate(rxPresenter)
-  protected lateinit var fragmentBinding: VB
+  protected var fragmentBinding: VB? = null
   private var dialog: AlertDialog? = null
   private lateinit var squareView: RollSquareView
 
@@ -49,10 +49,10 @@ abstract class BaseFragment<VB : ViewDataBinding> : Fragment() {
     if (layoutResId() != 0) {
       fragmentBinding = DataBindingUtil.inflate(inflater, layoutResId(), container,
           false)
-      return if (fragmentBinding != null && fragmentBinding.root != null) {
-        fragmentBinding.root
+      return if (fragmentBinding != null) {
+        fragmentBinding!!.root
       } else {
-        inflater?.inflate(layoutResId(), container, false)
+        inflater.inflate(layoutResId(), container, false)
       }
     }
     return super.onCreateView(inflater, container, savedInstanceState)
@@ -106,7 +106,7 @@ abstract class BaseFragment<VB : ViewDataBinding> : Fragment() {
       dialog?.setCancelable(false)
       dialog?.show()
     } else {
-      if (null != squareView && View.VISIBLE != squareView.getVisibility()) {
+      if (View.VISIBLE != squareView.visibility) {
         squareView.visibility = View.VISIBLE
       }
       dialog?.show()

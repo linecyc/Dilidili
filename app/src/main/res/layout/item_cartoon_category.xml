@@ -18,7 +18,7 @@
       android:layout_height="wrap_content"
       android:layout_margin="@dimen/margin_smallest"
       android:background="@drawable/round_corner_bg_white"
-      android:onClick="@{(v) -> eventHandling.onCartoonCategoryClick(v, itemCartoonCategory)}"
+      android:onClick="@{(v) -> eventHandling.onJumpListClick(v, itemCartoonCategory)}"
       android:padding="@dimen/padding_smallest"
       tools:ignore="ContentDescription"
       >

@@ -27,7 +27,13 @@ class CartoonDataSource @Inject internal constructor() : CartoonRepository {
   }
 
   override fun getSerials(serialsUrl: String): Observable<Document> {
-    return ResponseUtils.getDataWithUrl(DiliApi.baseUrl + serialsUrl)
+    return ResponseUtils.getDataWithUrl(
+        if (serialsUrl.startsWith("http:")) serialsUrl else DiliApi.baseUrl + serialsUrl)
+  }
+
+  override fun getCartoonList(link: String): Observable<Document> {
+    return ResponseUtils.getDataWithUrl(
+        if (link.startsWith("http:")) link else DiliApi.baseUrl + link)
   }
 
 }

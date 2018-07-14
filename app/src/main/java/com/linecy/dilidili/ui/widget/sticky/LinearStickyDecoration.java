@@ -27,9 +27,9 @@ public abstract class LinearStickyDecoration extends RecyclerView.ItemDecoration
   private boolean isCustom;//是否自定义头
 
   List<GroupInfo> groups = new ArrayList<>();//保存分组信息
-  SparseArray<GroupInfo> startArr = new SparseArray<>();//分组与起始节点对于关系
+  private SparseArray<GroupInfo> startArr = new SparseArray<>();//分组与起始节点对于关系
   SparseArray<GroupInfo> endSArr = new SparseArray<>();//分组与结束节点对于关系
-  HashMap<String, View> headerCache = new HashMap<>();//头部缓存
+  private HashMap<String, View> headerCache = new HashMap<>();//头部缓存
 
   public LinearStickyDecoration(Context context) {
     TextView view = new TextView(context);

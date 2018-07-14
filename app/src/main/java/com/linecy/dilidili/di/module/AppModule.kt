@@ -3,6 +3,7 @@ package com.linecy.dilidili.di.module
 import android.app.Application
 import android.content.Context
 import com.linecy.dilidili.ui.misc.ActivityManager
+import com.linecy.dilidili.ui.misc.Settings
 import com.linecy.module.core.rx.BackPressureRxBus
 import com.linecy.module.core.rx.RxBus
 import com.linecy.module.core.utils.Toaster
@@ -50,5 +51,12 @@ class AppModule(private val application: Application) {
   @Singleton
   fun provideBackPressureRxBus(): BackPressureRxBus {
     return BackPressureRxBus()
+  }
+
+
+  @Provides
+  @Singleton
+  fun provideSettings(): Settings {
+    return Settings(application)
   }
 }

@@ -16,7 +16,7 @@ abstract class RxPresenter<T : BaseView> : Presenter<T> {
 
   protected val disposables = CompositeDisposable()
   protected var baseView: T? = null
-  protected var isLoading = false
+   var isLoading = false
 
   override fun restoreInstanceState(savedInstanceState: Bundle?) {
 

@@ -1,11 +1,11 @@
 package com.linecy.dilidili.ui.cartoon
 
+import android.databinding.ViewDataBinding
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import com.linecy.dilidili.R
-import com.linecy.dilidili.databinding.FragmentCartoonBinding
 import com.linecy.dilidili.ui.BaseFragment
 import kotlinx.android.synthetic.main.fragment_cartoon.tabLayout
 import kotlinx.android.synthetic.main.fragment_cartoon.viewPager
@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.fragment_cartoon.viewPager
  * 番剧主入口
  * @author by linecy.
  */
-class CartoonFragment : BaseFragment<FragmentCartoonBinding>() {
+class CartoonFragment : BaseFragment<ViewDataBinding>() {
   override fun layoutResId(): Int {
     return R.layout.fragment_cartoon
   }

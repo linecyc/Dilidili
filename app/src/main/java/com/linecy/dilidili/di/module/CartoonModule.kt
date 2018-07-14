@@ -13,7 +13,7 @@ import dagger.Provides
 class CartoonModule {
 
   @Provides
-  fun provideHomeRepository(cartoonDataSource: CartoonDataSource): CartoonRepository {
+  fun provideCartoonRepository(cartoonDataSource: CartoonDataSource): CartoonRepository {
     return cartoonDataSource
   }
 }

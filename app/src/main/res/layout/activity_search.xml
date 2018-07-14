@@ -1,18 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+<android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     >
-
-
-  <android.support.constraint.ConstraintLayout
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
+  <include
+      layout="@layout/layout_search"
+      android:id="@+id/include"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      />
+  <com.linecy.dilidili.ui.misc.ViewContainer
+      android:id="@+id/viewContainer"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:inAnimation="@android:anim/fade_in"
+      android:outAnimation="@android:anim/fade_out"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/include"
       >
-    <include
-        layout="@layout/layout_search"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
-  </android.support.constraint.ConstraintLayout>
-</layout>
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+      <android.support.v7.widget.RecyclerView
+          android:id="@+id/recyclerView"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          />
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+  </com.linecy.dilidili.ui.misc.ViewContainer>
+
+</android.support.constraint.ConstraintLayout>

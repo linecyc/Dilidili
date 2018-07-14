@@ -12,7 +12,6 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
-import timber.log.Timber
 import java.util.regex.Pattern
 import javax.inject.Inject
 
@@ -50,29 +49,6 @@ class HomePresenter @Inject constructor(
           isLoading = false
           baseView?.hideLoading()
           baseView?.showError()
-          Timber.e("Error------>>:$it")
-
-        }))
-  }
-
-
-  /**
-   *获取最近更新列表
-   */
-  fun getLatestUpdate() {
-    disposables.add(loadLatest().subscribeOn(Schedulers.io())
-        .observeOn(
-            AndroidSchedulers.mainThread()).subscribe({
-          Timber.e("latest------>>:$it")
-
-        }, {
-          isLoading = false
-          baseView?.hideLoading()
-          Timber.e("Error------>>:$it")
-
-        }, {
-          isLoading = false
-          baseView?.hideLoading()
         }))
   }
 

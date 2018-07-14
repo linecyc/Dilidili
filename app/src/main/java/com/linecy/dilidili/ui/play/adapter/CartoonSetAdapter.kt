@@ -11,13 +11,14 @@ import com.linecy.dilidili.BR
 import com.linecy.dilidili.R
 import com.linecy.dilidili.data.model.Cartoon
 import com.linecy.dilidili.databinding.ItemCartoonSetBinding
-import com.linecy.dilidili.databinding.LayoutCartoonSetHeaderBinding
+import com.linecy.dilidili.ui.play.adapter.CartoonSetAdapter.CartoonSetViewHolder
+import kotlinx.android.synthetic.main.item_cartoon_set.view.tvLabel
+import kotlinx.android.synthetic.main.item_cartoon_set.view.tvTitle
 
 /**
  * @author by linecy.
  */
-class CartoonSetAdapter(
-    private val context: Context) : RecyclerView.Adapter<ViewHolder>() {
+class CartoonSetAdapter(context: Context) : RecyclerView.Adapter<CartoonSetViewHolder>() {
 
   private val headerType = 0
   private val listType = 1
@@ -25,64 +26,72 @@ class CartoonSetAdapter(
   private val list = ArrayList<Cartoon>()
   private val inflater = LayoutInflater.from(context)
   private var linstener: OnCartoonSetClickListener? = null
+  private var current: String? = null//当前position的链接
+  private var nextLink: String? = null//下一话链接
 
-  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-    return when (viewType) {
-      headerType -> {
-        val dataBinding: LayoutCartoonSetHeaderBinding = DataBindingUtil.inflate(inflater,
-            R.layout.layout_cartoon_set_header,
-            parent, false)
-        HeaderViewHolder(dataBinding)
-      }
-      else -> {
-        val dataBinding: ItemCartoonSetBinding = DataBindingUtil.inflate(inflater,
-            R.layout.item_cartoon_set,
-            parent, false)
-        dataBinding.onCartoonSetClickListener = linstener
-        CartoonSetViewHolder(dataBinding)
-      }
-    }
-  }
-
-
-  override fun getItemViewType(position: Int): Int {
-    return if (position == 0) {
-      headerType
-    } else {
-      listType
-    }
+  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CartoonSetViewHolder {
+    val dataBinding: ItemCartoonSetBinding = DataBindingUtil.inflate(inflater,
+        R.layout.item_cartoon_set,
+        parent, false)
+    return CartoonSetViewHolder(dataBinding)
   }
 
   override fun getItemCount(): Int {
     return list.size
   }
 
-  override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-    if (holder is CartoonSetViewHolder) {
-      holder.bindData(list[position])
-    }
+  override fun onBindViewHolder(holder: CartoonSetViewHolder, position: Int) {
+    holder.bindData(list[position], position)
   }
 
-  class CartoonSetViewHolder(private val dataBinding: ViewDataBinding) : ViewHolder(
+  inner class CartoonSetViewHolder(private val dataBinding: ViewDataBinding) : ViewHolder(
       dataBinding.root) {
+    private lateinit var cartoon: Cartoon
+    private var index: Int = 0
 
-    fun bindData(cartoon: Cartoon) {
+    init {
+      dataBinding.root.setOnClickListener {
+        current = cartoon.playDetail
+        linstener?.onCartoonSetClick(cartoon, index)
+        notifyDataSetChanged()//记录两个的位置用itemChanged更好
+        dataBinding.root.isEnabled = false //选中后不可再次点击
+      }
+    }
+
+    fun bindData(cartoon: Cartoon, position: Int) {
+      this.cartoon = cartoon
+      this.index = position
+      if (current.equals(cartoon.playDetail)) {
+        itemView.isSelected = true
+        if (position < list.size - 1) {
+          nextLink = list[position + 1].playDetail
+        }
+        dataBinding.root.tvLabel.isSelected = true
+        dataBinding.root.tvTitle.isSelected = true
+        dataBinding.root.isEnabled = false
+      } else {
+        itemView.isSelected = false
+        dataBinding.root.tvLabel.isSelected = false
+        dataBinding.root.tvTitle.isSelected = false
+        dataBinding.root.isEnabled = true
+      }
       dataBinding.setVariable(BR.itemCartoonSet, cartoon)
       dataBinding.executePendingBindings()
     }
   }
 
-  class HeaderViewHolder(private val dataBinding: ViewDataBinding) : ViewHolder(
-      dataBinding.root) {
-
-  }
-
-  fun refreshData(list: List<Cartoon>?) {
+  fun refreshData(list: List<Cartoon>?, currentLink: String?) {
     this.list.clear()
+    this.current = currentLink
     if (list != null && list.isNotEmpty()) {
       this.list.addAll(list)
     }
     notifyDataSetChanged()
+  }
+
+
+  fun getNextLink(): String? {
+    return nextLink
   }
 
   fun setOnCartoonSetClickListener(l: OnCartoonSetClickListener?) {
@@ -91,6 +100,6 @@ class CartoonSetAdapter(
 
   interface OnCartoonSetClickListener {
 
-    fun onCartoonSetClick(cartoon: Cartoon)
+    fun onCartoonSetClick(cartoon: Cartoon, position: Int)
   }
 }

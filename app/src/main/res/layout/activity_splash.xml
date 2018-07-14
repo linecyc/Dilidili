@@ -1,69 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
+<android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:ignore="ContentDescription"
     >
 
-  <android.support.constraint.ConstraintLayout
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      tools:ignore="ContentDescription"
-      >
+  <ImageView
+      android:id="@+id/tvApp"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:src="@mipmap/ic_app_logo"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      />
+  <ImageView
+      android:id="@+id/ivSplash"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:scaleType="fitXY"
+      android:src="@drawable/bg_splash"
+      app:layout_constraintBottom_toTopOf="@+id/tvApp"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      />
+  <TextView
+      android:id="@+id/tvCountDown"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="24dp"
+      android:layout_marginTop="24dp"
+      android:background="@drawable/ring_bg_white"
+      android:gravity="center"
+      android:textColor="@color/white"
+      android:textSize="@dimen/font_normal"
+      android:visibility="gone"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      tools:text="5s"
+      tools:visibility="visible"
+      />
+  <TextView
+      android:id="@+id/tvSkip"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="8dp"
+      android:layout_marginEnd="24dp"
+      android:background="@drawable/round_ring_bg_white"
+      android:paddingBottom="@dimen/padding_extreme_small"
+      android:paddingLeft="@dimen/padding_smallest"
+      android:paddingRight="@dimen/padding_smallest"
+      android:paddingTop="@dimen/padding_extreme_small"
+      android:text="@string/skip"
+      android:textColor="@color/white"
+      android:textSize="@dimen/font_smallest"
+      app:layout_constraintBottom_toBottomOf="@+id/ivSplash"
+      app:layout_constraintEnd_toEndOf="parent"
+      />
 
-    <ImageView
-        android:id="@+id/tvApp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@mipmap/ic_app_logo"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        />
-    <ImageView
-        android:id="@+id/ivSplash"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:scaleType="fitXY"
-        android:src="@drawable/bg_splash"
-        app:layout_constraintBottom_toTopOf="@+id/tvApp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
-    <TextView
-        android:id="@+id/tvCountDown"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        android:layout_marginTop="24dp"
-        android:background="@drawable/ring_bg_white"
-        android:gravity="center"
-        android:textColor="@color/white"
-        android:textSize="@dimen/font_normal"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="5s"
-        tools:visibility="visible"
-        />
-    <TextView
-        android:id="@+id/tvSkip"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="24dp"
-        android:background="@drawable/round_ring_bg_white"
-        android:paddingBottom="@dimen/padding_extreme_small"
-        android:paddingLeft="@dimen/padding_smallest"
-        android:paddingRight="@dimen/padding_smallest"
-        android:paddingTop="@dimen/padding_extreme_small"
-        android:text="@string/skip"
-        android:textColor="@color/white"
-        android:textSize="@dimen/font_smallest"
-        app:layout_constraintBottom_toBottomOf="@+id/ivSplash"
-        app:layout_constraintEnd_toEndOf="parent"
-        />
-
-  </android.support.constraint.ConstraintLayout>
-</layout>
+</android.support.constraint.ConstraintLayout>

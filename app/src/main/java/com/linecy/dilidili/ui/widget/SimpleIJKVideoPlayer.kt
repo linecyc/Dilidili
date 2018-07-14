@@ -82,6 +82,8 @@ class SimpleIJKVideoPlayer : FrameLayout {
   //上一个播放状态，用于拖动后是否播放
   private var preState = STATE_INIT
 
+  private var useHardDecode = false//是否使用硬解码
+
   /**
    * 视频文件地址
    */
@@ -268,7 +270,9 @@ class SimpleIJKVideoPlayer : FrameLayout {
     val ijkMediaPlayer = IjkMediaPlayer()
 
     //开启硬解码
-    //ijkMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec", 1)
+    if (useHardDecode) {
+      ijkMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec", 1)
+    }
 
     mMediaPlayer = ijkMediaPlayer
 
@@ -399,6 +403,22 @@ class SimpleIJKVideoPlayer : FrameLayout {
   /**
    * -------======--------- 下面封装了一下控制视频的方法
    */
+
+
+  /**
+   * 硬解码
+   */
+
+  fun setHardDecode(useHardDecode: Boolean) {
+    this.useHardDecode = useHardDecode
+  }
+
+  /**
+   * 获取播放状态
+   */
+  fun getPlayState(): Int {
+    return playState
+  }
 
   /**
    * 播放

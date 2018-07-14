@@ -10,9 +10,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
-import android.view.ViewGroup
 import android.widget.ImageButton
-import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import com.linecy.dilidili.R
@@ -25,6 +23,7 @@ import com.linecy.module.core.mvp.RxPresenter
 import com.linecy.module.core.mvp.RxPresenterDelegate
 import com.linecy.module.core.utils.Toaster
 import dagger.android.AndroidInjection
+import kotlinx.android.synthetic.main.layout_base.appContainer
 import javax.inject.Inject
 
 /**
@@ -37,7 +36,7 @@ abstract class BaseActivity<VB : ViewDataBinding> : AppCompatActivity(), OnClick
 
   private val rxPresenter = object : RxPresenter<BaseView>() {}
   private val rxPresenterDelegate = RxPresenterDelegate(rxPresenter)
-  protected lateinit var mDataBinding: VB
+  protected var mDataBinding: VB? = null
   private var mBaseBinding: LayoutBaseBinding? = null
   private var mToolbar: ConstraintLayout? = null
   private var mTvTitle: TextView? = null
@@ -65,16 +64,20 @@ abstract class BaseActivity<VB : ViewDataBinding> : AppCompatActivity(), OnClick
   }
 
   override fun setContentView(layoutResID: Int) {
-    val appContainer = AppContainer.DEFAULT
-    val rootView = appContainer.bind(this)
-    mBaseBinding = DataBindingUtil.inflate(layoutInflater, R.layout.layout_base, rootView, true)
-    mDataBinding = DataBindingUtil.inflate(layoutInflater, layoutResID, null, false)
+    val app = AppContainer.DEFAULT
+    val rootView = app.bind(this)
 
-    // content
-    val params = RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-        ViewGroup.LayoutParams.MATCH_PARENT)
-    mDataBinding.root.layoutParams = params
-    mBaseBinding?.appContainer?.addView(mDataBinding.root)
+    mBaseBinding = DataBindingUtil.inflate(layoutInflater, R.layout.layout_base, rootView, true)
+    if (0 != layoutResID) {
+      mDataBinding = DataBindingUtil.inflate(layoutInflater, layoutResID, null, false)
+
+      // content
+      if (mDataBinding == null) {
+        layoutInflater.inflate(layoutResID, appContainer)
+      } else {
+        mBaseBinding?.appContainer?.addView(mDataBinding?.root)
+      }
+    }
     // title
     mToolbar = mBaseBinding?.root?.findViewById(R.id.containerToolBar)
     mIbHomeAsUp = mBaseBinding?.root?.findViewById(R.id.containerUp)
@@ -111,6 +114,7 @@ abstract class BaseActivity<VB : ViewDataBinding> : AppCompatActivity(), OnClick
   protected fun hideToolBar() {
     mToolbar?.visibility = View.GONE
   }
+
   protected fun showToolBar() {
     mToolbar?.visibility = View.VISIBLE
   }
@@ -153,7 +157,7 @@ abstract class BaseActivity<VB : ViewDataBinding> : AppCompatActivity(), OnClick
         dialog?.setCancelable(false)
         dialog?.show()
       } else {
-        if (null != squareView && View.VISIBLE != squareView.visibility) {
+        if (View.VISIBLE != squareView.visibility) {
           squareView.visibility = View.VISIBLE
         }
         dialog?.show()

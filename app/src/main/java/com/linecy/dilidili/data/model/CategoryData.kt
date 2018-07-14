@@ -4,6 +4,7 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 /**
+ * 用于展示频道页
  * @author by linecy.
  */
 @Parcelize

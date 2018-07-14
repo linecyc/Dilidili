@@ -14,7 +14,7 @@ import android.util.TypedValue
 /**
  * @author by linecy.
  */
-class LabelBackgroundSpan(private val context: Context,
+class LabelBackgroundSpan(context: Context,
     private val textString: String?, @ColorInt private val bgColor: Int,
     textSize: Float = 10f, @ColorInt private val textColor: Int = Color.BLACK,
     textPadding: Float = 4f) : ReplacementSpan() {

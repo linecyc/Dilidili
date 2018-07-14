@@ -4,6 +4,7 @@ import com.linecy.dilidili.R.drawable
 import com.linecy.dilidili.data.model.Category
 import com.linecy.dilidili.data.model.CategoryData
 import com.linecy.module.core.mvp.RxPresenter
+import com.linecy.module.core.rx.subscribeBy
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.BiFunction
@@ -29,7 +30,7 @@ class CategoryPresenter @Inject constructor() : RxPresenter<CategoryView>() {
             })
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
+            .subscribeBy({
               baseView?.hideLoading()
               baseView?.showCategory(it.categories, it.years)
             }, { baseView?.hideLoading() }))
@@ -85,7 +86,7 @@ class CategoryPresenter @Inject constructor() : RxPresenter<CategoryView>() {
     list.add(
         Category(title = "泡面番", icon = drawable.ic_category_t47, link = "/paomianfan/"))
     list.add(
-        Category(title = "乙女", icon = drawable.ic_category_t130, link = "/yinv/"))
+        Category(title = "乙女", icon = drawable.ic_category_t31, link = "/yinv/"))
     list.add(
         Category(title = "动作", icon = drawable.ic_category_t33, link = "/dongzuo/"))
 

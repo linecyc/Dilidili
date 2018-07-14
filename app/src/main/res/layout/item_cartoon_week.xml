@@ -23,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/round_corner_bg_white"
-        android:onClick="@{(v) -> eventHandling.onCartoonClick(v, itemCartoonWeek)}"
+        android:onClick="@{(v) -> eventHandling.onJumpSerialsClick(v, itemCartoonWeek.playDetail)}"
         tools:ignore="ContentDescription"
         >
 

@@ -36,11 +36,15 @@ class ViewContainer(context: Context, attrs: AttributeSet?) : BatterViewAnimator
   override fun onFinishInflate() {
     super.onFinishInflate()
     findViewById<ConstraintLayout>(R.id.error).setOnClickListener {
-      setDisplayedChildId(R.id.layoutNull)
+      if (onReloadCallBack != null) {
+        setDisplayedChildId(R.id.layoutNull)
+      }
       onReloadCallBack?.onReload()
     }
     findViewById<ConstraintLayout>(R.id.empty).setOnClickListener {
-      setDisplayedChildId(R.id.layoutNull)
+      if (onEmptyCallback != null) {
+        setDisplayedChildId(R.id.layoutNull)
+      }
       onEmptyCallback?.onEmpty()
     }
   }

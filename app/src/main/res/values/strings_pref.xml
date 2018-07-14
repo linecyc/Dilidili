@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="on">开启</string>
+  <string name="off">关闭</string>
+  <string name="hard_to_decode">是否开启硬解码</string>
+  <string name="auto_play_next">是否开启自动换P</string>
+  <string name="play_speed">选择播放倍速</string>
+
+  <string-array name="speed_array">
+    <item>0.5倍速率</item>
+    <item>1.0倍速率</item>
+    <item>1.5倍速率</item>
+    <item>2倍速率</item>
+    <item>3倍速率</item>
+  </string-array>
+  <string-array name="speed_value_array">
+    <item>0.5</item>
+    <item>1.0</item>
+    <item>1.5</item>
+    <item>2</item>
+    <item>3</item>
+  </string-array>
+</resources>

@@ -1,6 +1,8 @@
 package com.linecy.dilidili.ui
 
+import android.databinding.ViewDataBinding
 import android.os.Bundle
+import android.os.SystemClock
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
@@ -9,7 +11,6 @@ import android.support.v4.view.ViewPager.OnPageChangeListener
 import android.view.MenuItem
 import com.linecy.dilidili.R
 import com.linecy.dilidili.R.layout
-import com.linecy.dilidili.databinding.ActivityMainBinding
 import com.linecy.dilidili.ui.account.ProfileFragment
 import com.linecy.dilidili.ui.cartoon.CartoonFragment
 import com.linecy.dilidili.ui.home.HomeFragment
@@ -19,10 +20,11 @@ import kotlinx.android.synthetic.main.activity_main.viewPager
 /**
  * app主页
  */
-class MainActivity : BaseActivity<ActivityMainBinding>() {
+class MainActivity : BaseActivity<ViewDataBinding>() {
 
   private var menuItem: MenuItem? = null
-
+  private val defaultTime = 2000//双击退出默认时间间隔
+  private var lastClickTime = 0L//上次点击时间
 
   override fun layoutResId(): Int {
     return layout.activity_main
@@ -80,10 +82,21 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         menuItem = bottomNavigation.menu.getItem(position)
         menuItem?.isChecked = true
       }
-
     })
   }
 
+  /**
+   * 双击退出app
+   */
+  override fun onBackPressed() {
+    val current = SystemClock.elapsedRealtime()
+    if (current - lastClickTime > defaultTime) {
+      lastClickTime = current
+      toaster.showText(R.string.exit_app)
+    } else {
+      finish()
+    }
+  }
 
   class FragmentAdapter(manager: FragmentManager,
       private val list: ArrayList<Fragment>) : FragmentPagerAdapter(
@@ -101,8 +114,5 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     override fun getCount(): Int {
       return list.size
     }
-
   }
-
-
 }

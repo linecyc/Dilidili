@@ -42,7 +42,7 @@ class CartoonWeekAdapter(context: Context) : RecyclerView.Adapter<CartoonViewHol
 
   //如果数组越界，则html解析的数据异常？
   override fun getItemCount(): Int {
-    return if (null != list && list.size > 0 && null != list[current]) {
+    return if (list.size > 0 && null != list[current]) {
       list[current].size
     } else {
       0

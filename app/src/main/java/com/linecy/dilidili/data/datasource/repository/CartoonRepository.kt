@@ -33,4 +33,9 @@ interface CartoonRepository {
    */
   fun getSerials(serialsUrl: String): Observable<Document>
 
+  /**
+   * 获取当前番剧的详情页
+   */
+  fun getCartoonList(link: String): Observable<Document>
+
 }

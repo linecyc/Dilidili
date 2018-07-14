@@ -1,5 +1,6 @@
 package com.linecy.dilidili.di.module
 
+import com.linecy.dilidili.ui.account.PlayerSettingFragment
 import com.linecy.dilidili.ui.account.ProfileFragment
 import com.linecy.dilidili.ui.cartoon.CartoonCategoryFragment
 import com.linecy.dilidili.ui.cartoon.CartoonFragment
@@ -28,4 +29,7 @@ abstract class FragmentModule {
 
   @ContributesAndroidInjector
   abstract fun profileFragment(): ProfileFragment
+
+  @ContributesAndroidInjector
+  abstract fun playerSettingFragment(): PlayerSettingFragment
 }

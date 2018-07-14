@@ -1,11 +1,11 @@
 package com.linecy.dilidili.ui.splash
 
 import android.content.Intent
+import android.databinding.ViewDataBinding
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import com.linecy.dilidili.R
-import com.linecy.dilidili.databinding.ActivitySplashBinding
 import com.linecy.dilidili.ui.BaseActivity
 import com.linecy.dilidili.ui.MainActivity
 import io.reactivex.Flowable
@@ -19,10 +19,10 @@ import java.util.concurrent.TimeUnit.SECONDS
 /**
  * @author by linecy.
  */
-class SplashActivity : BaseActivity<ActivitySplashBinding>() {
+class SplashActivity : BaseActivity<ViewDataBinding>() {
 
   //倒计时总时间
-  private val time: Long = 5
+  private val time: Long = 3
   private var countDown: Long = time
   private var disposable: Disposable? = null
   override fun layoutResId(): Int {
@@ -48,11 +48,6 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
     super.onPause()
     disposable?.dispose()
 
-  }
-
-  override fun onDestroy() {
-    super.onDestroy()
-    disposable?.dispose()
   }
 
   /**

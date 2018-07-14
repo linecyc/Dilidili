@@ -17,7 +17,7 @@ import com.linecy.dilidili.ui.misc.EventHandling
 /**
  * @author by linecy.
  */
-class CartoonAdapter(private val context: Context) : RecyclerView.Adapter<CartoonViewHolder>() {
+class CartoonAdapter(context: Context) : RecyclerView.Adapter<CartoonViewHolder>() {
   private val list = ArrayList<Cartoon>()
   private val inflater = LayoutInflater.from(context)
 

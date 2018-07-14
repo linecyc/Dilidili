@@ -1,12 +1,13 @@
 package com.linecy.dilidili.data.presenter.play
 
+import android.text.TextUtils
 import com.linecy.dilidili.data.datasource.repository.CartoonRepository
 import com.linecy.dilidili.data.model.Cartoon
 import com.linecy.dilidili.data.model.PlayDetail
 import com.linecy.module.core.mvp.RxPresenter
+import com.linecy.module.core.rx.subscribeBy
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import timber.log.Timber
 import java.util.regex.Pattern
 import javax.inject.Inject
 
@@ -74,26 +75,28 @@ class PlayPresenter @Inject constructor(
 
       val aList = it.select("div.aside_cen2 div.num a")//集数列表
       val list = ArrayList<Cartoon>()
-      aList.forEach {
+      aList?.forEach {
+        var name = it.attr("title")
+        val text = it.text()
+        if (TextUtils.isEmpty(name)) {
+          name = "暂无介绍"
+        }
         list.add(
-            Cartoon(currentTitle = it.attr("title"), latest = it.text(),
+            Cartoon(currentTitle = name, latest = text,
                 playDetail = it.attr("href")))
       }
       PlayDetail(title = title, playUrl = play, coverUrl = cover, current = curr,
           updateTime = p[p.size - 1].text().substring(4), detail = detailUrl, cartoonList = list)
     }.subscribeOn(Schedulers.io())
-        .observeOn(
-            AndroidSchedulers.mainThread()).subscribe({
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribeBy({
+          isLoading = false
+          baseView?.hideLoading()
           baseView?.showCartoonDetail(it)
         }, {
           isLoading = false
           baseView?.hideLoading()
           baseView?.showError(it.message)
-          Timber.e("Error------>>:$it")
-
-        }, {
-          isLoading = false
-          baseView?.hideLoading()
         }))
   }
 }

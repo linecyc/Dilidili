@@ -10,7 +10,7 @@ import kotlinx.android.parcel.Parcelize
  * @param coverUrl 封面
  * @param latest 当前最新集数或最后更新时间
  * @param currentTitle 当前集标题
- * @param playDetail 单集番剧播放详情url
+ * @param playDetail 番剧播放详情url
  *
  * @author by linecy.
  */

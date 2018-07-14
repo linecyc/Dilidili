@@ -25,38 +25,34 @@ import android.support.annotation.Nullable;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 
 public class MediaPlayerService extends Service {
-    private static IMediaPlayer sMediaPlayer;
+  private static IMediaPlayer sMediaPlayer;
 
-    public static Intent newIntent(Context context) {
-        Intent intent = new Intent(context, MediaPlayerService.class);
-        return intent;
-    }
+  private static Intent newIntent(Context context) {
+    return new Intent(context, MediaPlayerService.class);
+  }
 
-    public static void intentToStart(Context context) {
-        context.startService(newIntent(context));
-    }
+  public static void intentToStart(Context context) {
+    context.startService(newIntent(context));
+  }
 
-    public static void intentToStop(Context context) {
-        context.stopService(newIntent(context));
-    }
+  public static void intentToStop(Context context) {
+    context.stopService(newIntent(context));
+  }
 
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
-    }
+  @Nullable @Override public IBinder onBind(Intent intent) {
+    return null;
+  }
 
-    public static void setMediaPlayer(IMediaPlayer mp) {
-        if (sMediaPlayer != null && sMediaPlayer != mp) {
-            if (sMediaPlayer.isPlaying())
-                sMediaPlayer.stop();
-            sMediaPlayer.release();
-            sMediaPlayer = null;
-        }
-        sMediaPlayer = mp;
+  public static void setMediaPlayer(IMediaPlayer mp) {
+    if (sMediaPlayer != null && sMediaPlayer != mp) {
+      if (sMediaPlayer.isPlaying()) sMediaPlayer.stop();
+      sMediaPlayer.release();
+      sMediaPlayer = null;
     }
+    sMediaPlayer = mp;
+  }
 
-    public static IMediaPlayer getMediaPlayer() {
-        return sMediaPlayer;
-    }
+  public static IMediaPlayer getMediaPlayer() {
+    return sMediaPlayer;
+  }
 }

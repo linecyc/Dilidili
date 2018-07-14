@@ -1,4 +1,4 @@
-package com.linecy.copy.di.scope
+package com.linecy.dilidili.di.scope
 
 import javax.inject.Scope
 import kotlin.annotation.AnnotationRetention.RUNTIME

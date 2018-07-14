@@ -1,6 +1,8 @@
 package com.linecy.dilidili.ui.play
 
+import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.databinding.ViewDataBinding
 import android.graphics.Point
 import android.graphics.drawable.AnimationDrawable
 import android.os.Bundle
@@ -15,17 +17,25 @@ import com.linecy.dilidili.data.model.Cartoon
 import com.linecy.dilidili.data.model.PlayDetail
 import com.linecy.dilidili.data.presenter.play.PlayPresenter
 import com.linecy.dilidili.data.presenter.play.PlayView
-import com.linecy.dilidili.databinding.ActivityPlayBinding
+import com.linecy.dilidili.di.module.GlideApp
 import com.linecy.dilidili.ui.BaseActivity
+import com.linecy.dilidili.ui.account.SettingsActivity
+import com.linecy.dilidili.ui.misc.GlideCircleTransform
+import com.linecy.dilidili.ui.misc.Settings
+import com.linecy.dilidili.ui.misc.ViewContainer
 import com.linecy.dilidili.ui.misc.ijk.IMediaController
 import com.linecy.dilidili.ui.play.adapter.CartoonSetAdapter
 import com.linecy.dilidili.ui.play.adapter.CartoonSetAdapter.OnCartoonSetClickListener
 import com.linecy.dilidili.ui.widget.SimpleIJKVideoPlayer
 import com.linecy.dilidili.utils.TimeUtils
+import kotlinx.android.synthetic.main.activity_play.ivAvatar
 import kotlinx.android.synthetic.main.activity_play.ivPlayLoading
 import kotlinx.android.synthetic.main.activity_play.layout_play_control
+import kotlinx.android.synthetic.main.activity_play.listGroup
 import kotlinx.android.synthetic.main.activity_play.recyclerView
+import kotlinx.android.synthetic.main.activity_play.tvDetail
 import kotlinx.android.synthetic.main.activity_play.videoPlayer
+import kotlinx.android.synthetic.main.activity_play.viewContainer
 import kotlinx.android.synthetic.main.layout_play_control.groupFull
 import kotlinx.android.synthetic.main.layout_play_control.groupMin
 import kotlinx.android.synthetic.main.layout_play_control.ivFull
@@ -37,27 +47,29 @@ import kotlinx.android.synthetic.main.layout_play_control.seekBar
 import kotlinx.android.synthetic.main.layout_play_control.tvCurrent
 import kotlinx.android.synthetic.main.layout_play_control.tvDrag
 import kotlinx.android.synthetic.main.layout_play_control.tvDuration
-import kotlinx.android.synthetic.main.layout_play_control.tvTitle
 import timber.log.Timber
 import tv.danmaku.ijk.media.player.IjkMediaPlayer
 import javax.inject.Inject
 
 /**
+ * 播放页面
  * @author by linecy.
  */
-class PlayActivity : BaseActivity<ActivityPlayBinding>(), PlayView,
-    OnCartoonSetClickListener, IMediaController {
-
-  @Inject
-  lateinit var playPresenter: PlayPresenter
+class PlayActivity : BaseActivity<ViewDataBinding>(), PlayView,
+    OnCartoonSetClickListener, IMediaController, ViewContainer.OnReloadCallBack {
 
   companion object {
     const val EXTRA_CARTOON = "cartoon"
   }
 
-  private var mBackPressed = false
+  @Inject
+  lateinit var playPresenter: PlayPresenter
+  @Inject
+  lateinit var settings: Settings
 
+  private val SETTING_REQUEST_CODE = 12
   private lateinit var adapter: CartoonSetAdapter
+  private var currentLink: String? = null//当前页面链接
 
   override fun layoutResId(): Int {
     return R.layout.activity_play
@@ -67,51 +79,30 @@ class PlayActivity : BaseActivity<ActivityPlayBinding>(), PlayView,
 
     delegatePresenter(playPresenter, this)
 
+    hideToolBar()
+    viewContainer.setOnReloadCallBack(this)
     //屏幕常亮
     window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
     val cartoon = intent.getParcelableExtra<Cartoon>(EXTRA_CARTOON)
-//    setDisplayHomeAsUp(true)
-//    setTitle(cartoon)
-    hideToolBar()
     val manager = GridLayoutManager(this, 2)
     recyclerView.layoutManager = manager
-    manager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-      override fun getSpanSize(position: Int): Int {
-        return if (position == 0) manager.spanCount else 1
-      }
-    }
-
     adapter = CartoonSetAdapter(this)
     adapter.setOnCartoonSetClickListener(this)
     recyclerView.adapter = adapter
+    videoPlayer.setHardDecode(settings.isHardCodec())
     videoPlayer.setUpWithControlView(this)
+    videoPlayer.setOnClickListener(this)
     videoPlayer.setUpWithSeekBar(seekBar)
     IjkMediaPlayer.loadLibrariesOnce(null)
     IjkMediaPlayer.native_profileBegin("libijkplayer.so")
 
     setClickListener(ivMin, ivFull, ivPlayPause, ivMore, ivLock)
-    playPresenter.getCartoon(cartoon.playDetail)
-  }
-
-
-  private fun setTitle(cartoon: Cartoon) {
-//    val title = if (TextUtils.isEmpty(cartoon.title)) {
-//      cartoon.currentTitle
-//    } else {
-//      cartoon.title
-//    }
-    if (!TextUtils.isEmpty(cartoon.title)) {
-      val arr = cartoon.title!!.split(" ")
-      when (arr.size) {
-        0 -> {
-        }
-        1 -> setToolbarTitle(cartoon.title)
-        else -> {
-          setToolbarTitle("${arr[0]} ${arr[1]}")
-        }
-
-      }
+    if (null != cartoon && !TextUtils.isEmpty(cartoon.playDetail)) {
+      currentLink = cartoon.playDetail
+      playPresenter.getCartoon(currentLink!!)
+    } else {
+      toaster.showText("未能解析当前播放链接")
     }
   }
 
@@ -134,7 +125,9 @@ class PlayActivity : BaseActivity<ActivityPlayBinding>(), PlayView,
       }
       R.id.ivMin -> {
         if (ivMin.isSelected) {
-          setFullScreen()
+          if (!ivLock.isSelected) {
+            setFullScreen()
+          }
         } else {
           finish()
         }
@@ -153,25 +146,59 @@ class PlayActivity : BaseActivity<ActivityPlayBinding>(), PlayView,
       R.id.ivLock -> {
         ivLock.isSelected = !ivLock.isSelected
       }
+      R.id.ivMore -> {
+        startActivityForResult(Intent(this, SettingsActivity::class.java), SETTING_REQUEST_CODE)
+      }
     }
+  }
+
+  override fun onReload() {
+    playPresenter.getCartoon(currentLink!!)
   }
 
   /**
    * 加载视频播放地址，如果不是视频地址，抛异常
    */
   override fun showCartoonDetail(playDetail: PlayDetail?) {
-    adapter.refreshData(playDetail?.cartoonList)
+    viewContainer.setDisplayedChildId(R.id.content)
+    adapter.refreshData(playDetail?.cartoonList, currentLink)
     if (playDetail != null && !TextUtils.isEmpty(playDetail.playUrl)) {
       if (playDetail.playUrl?.endsWith(".html")!!
           || playDetail.playUrl.endsWith("soresults.dtitle")
           || playDetail.playUrl.contains("v.youku.com")
+          || playDetail.playUrl.contains("iqiyi.com")
           || playDetail.playUrl.contains("v.pptv.com")) {
-        toaster.showText("网页视频暂不支持解析，请尝试切换源")
+        toaster.showText("网页视频暂不支持解析")
         Timber.i("-bad url------->>$playDetail.playUrl")
       } else {
         loadLoading(true)
         videoPlayer.setupWithUrl(playDetail.playUrl)
-        tvTitle.text = playDetail.title
+      }
+      tvDetail.text = playDetail.title
+      GlideApp.with(this)
+          .load(playDetail.coverUrl)
+          .transform(GlideCircleTransform())
+          .into(ivAvatar)
+    } else {
+      toaster.showText("未能解析到播放地址")
+    }
+  }
+
+  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    if (requestCode == SETTING_REQUEST_CODE) {
+      videoPlayer.setHardDecode(settings.isHardCodec())
+      if (videoPlayer.getPlayState() == SimpleIJKVideoPlayer.STATE_COMPLETION) {
+        if (settings.isAutoPlayNext()) {
+          val link = adapter.getNextLink()
+          if (TextUtils.isEmpty(link)) {
+            toaster.showText(R.string.play_last)
+          } else {
+            this.currentLink = link
+            toaster.showText(R.string.play_next)
+            videoPlayer.onStop()
+            playPresenter.getCartoon(link!!)
+          }
+        }
       }
     }
   }
@@ -188,7 +215,8 @@ class PlayActivity : BaseActivity<ActivityPlayBinding>(), PlayView,
 
   }
 
-  override fun onCartoonSetClick(cartoon: Cartoon) {
+  override fun onCartoonSetClick(cartoon: Cartoon, position: Int) {
+    this.currentLink = cartoon.playDetail
     videoPlayer.onStop()
     playPresenter.getCartoon(cartoon.playDetail)
   }
@@ -237,6 +265,22 @@ class PlayActivity : BaseActivity<ActivityPlayBinding>(), PlayView,
         seekBar.max = (player?.duration!! / 1000).toInt()
         tvDuration.text = TimeUtils.formatTime(seekBar.max)
       }
+      SimpleIJKVideoPlayer.STATE_COMPLETION -> {
+        loadLoading(false)
+        ivPlayPause.isSelected = false
+        //自动换p
+        if (settings.isAutoPlayNext()) {
+          val link = adapter.getNextLink()
+          if (TextUtils.isEmpty(link)) {
+            toaster.showText(R.string.play_last)
+          } else {
+            this.currentLink = link
+            toaster.showText(R.string.play_next)
+            videoPlayer.onStop()
+            playPresenter.getCartoon(link!!)
+          }
+        }
+      }
       else -> {
         loadLoading(false)
         ivPlayPause.isSelected = false
@@ -258,7 +302,6 @@ class PlayActivity : BaseActivity<ActivityPlayBinding>(), PlayView,
       ivLock.isSelected = false
       setFullScreen()
     } else {
-      mBackPressed = true
       super.onBackPressed()
     }
   }
@@ -300,7 +343,7 @@ class PlayActivity : BaseActivity<ActivityPlayBinding>(), PlayView,
       display.getSize(size)
       videoPlayer.layoutParams = ConstraintLayout.LayoutParams(size.x,
           (size.x * 9 / 16f).toInt())
-      recyclerView.visibility = View.VISIBLE
+      listGroup.visibility = View.VISIBLE
       groupFull.visibility = View.GONE
       groupMin.visibility = View.VISIBLE
     } else {
@@ -308,7 +351,7 @@ class PlayActivity : BaseActivity<ActivityPlayBinding>(), PlayView,
       window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
       videoPlayer.layoutParams = ConstraintLayout.LayoutParams(
           ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT)
-      recyclerView.visibility = View.GONE
+      listGroup.visibility = View.GONE
       groupFull.visibility = View.VISIBLE
       groupMin.visibility = View.GONE
     }

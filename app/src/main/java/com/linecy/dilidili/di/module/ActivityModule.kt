@@ -1,8 +1,11 @@
 package com.linecy.dilidili.di.module
 
 import com.linecy.dilidili.ui.MainActivity
-import com.linecy.dilidili.ui.SearchActivity
+import com.linecy.dilidili.ui.account.SettingsActivity
+import com.linecy.dilidili.ui.cartoon.CartoonListActivity
 import com.linecy.dilidili.ui.play.PlayActivity
+import com.linecy.dilidili.ui.play.SerialsActivity
+import com.linecy.dilidili.ui.search.SearchActivity
 import com.linecy.dilidili.ui.splash.SplashActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -24,6 +27,15 @@ abstract class ActivityModule {
   abstract fun splashActivity(): SplashActivity
 
 
-  @ContributesAndroidInjector
+  @ContributesAndroidInjector(modules = [SearchModule::class])
   abstract fun searchActivty(): SearchActivity
+
+  @ContributesAndroidInjector(modules = [CartoonModule::class])
+  abstract fun serialsActivity(): SerialsActivity
+
+  @ContributesAndroidInjector(modules = [CartoonModule::class])
+  abstract fun cartoonListActivity(): CartoonListActivity
+
+  @ContributesAndroidInjector
+  abstract fun settingsActivity(): SettingsActivity
 }

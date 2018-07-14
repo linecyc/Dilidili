@@ -12,6 +12,6 @@ public class GroupInfo {
     this.length = length;
   }
 
-  public String key;//分组key
-  public int length;//分组长度
+  public final String key;//分组key
+  public final int length;//分组长度
 }

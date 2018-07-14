@@ -29,11 +29,13 @@ class CustomAdapter(@NonNull private val context: Context, @NonNull layoutRes: I
   private var inflater: LayoutInflater
 
   private val list = ArrayList<Any>()
-  private var headerData: Any? = null
+  private var headerData = ArrayList<Any>()
 
   private var onItemClickListener: OnItemClickListener? = null
   private var onHeaderClickListener: OnHeaderClickListener? = null
 
+  private var dataSize = 0//数据总个数
+  private var headerSize = 0//头部数据个数
 
   init {
     if (layoutRes.isEmpty() || variableIds.isEmpty()) {
@@ -56,9 +58,10 @@ class CustomAdapter(@NonNull private val context: Context, @NonNull layoutRes: I
 
   override fun getItemViewType(position: Int): Int {
     return if (hasHeader) {
-      when (position) {
-        0 -> typeHeader
-        else -> typeItem
+      if (position < headerSize) {
+        typeHeader
+      } else {
+        typeItem
       }
     } else {
       typeItem
@@ -77,59 +80,89 @@ class CustomAdapter(@NonNull private val context: Context, @NonNull layoutRes: I
   }
 
   override fun getItemCount(): Int {
-    return if (hasHeader) {
-      list.size + 1
-    } else {
-      list.size
-    }
+    return dataSize
   }
 
   override fun onBindViewHolder(holder: ViewHolder, position: Int) {
     if (holder is CustomViewHolder) {
-      holder.bindData(list[if (hasHeader) position - 1 else position])
+      holder.bindData(list[if (hasHeader) position - headerSize else position])
     } else if (holder is HeaderViewHolder && headerVariableId != -1) {
-      holder.bindData(headerData)
+      holder.bindData(headerData[position])
     }
   }
 
 
   inner class CustomViewHolder(private val dataBinding: ViewDataBinding) : RecyclerView.ViewHolder(
       dataBinding.root) {
+    private var data: Any? = null
+
     init {
       itemView.setOnClickListener {
-        onItemClickListener?.onItemClick(it)
+        onItemClickListener?.onItemClick(it, data)
       }
     }
 
     fun bindData(data: Any?) {
       dataBinding.setVariable(itemVariableId, data)
       dataBinding.executePendingBindings()
+      this.data = data
     }
   }
 
 
   inner class HeaderViewHolder(private val dataBinding: ViewDataBinding) : RecyclerView.ViewHolder(
       dataBinding.root) {
+    private var data: Any? = null
+
     init {
       itemView.setOnClickListener {
-        onHeaderClickListener?.onHeaderClick(it)
+        onHeaderClickListener?.onHeaderClick(it, data)
       }
     }
 
     fun bindData(data: Any?) {
       dataBinding.setVariable(headerVariableId, data)
       dataBinding.executePendingBindings()
+      this.data = data
     }
   }
 
-
+  /**
+   * 只包含一个占一行空间的头部类型数据刷新
+   */
   fun refreshData(list: List<Any>?, headerData: Any? = null) {
     this.list.clear()
+    this.headerData.clear()
     if (list != null && list.isNotEmpty()) {
       this.list.addAll(list)
     }
-    this.headerData = headerData
+    if (headerData != null) {
+      this.headerData.add(headerData)
+    }
+    dataSize = this.list.size + this.headerData.size//重置数据长度
+    headerSize = this.headerData.size
     notifyDataSetChanged()
+  }
+
+  /**
+   * 两种数据类型的刷新，即头部不止一行
+   */
+  fun refreshData(list: List<Any>?, headerData: List<Any>? = null) {
+    this.list.clear()
+    this.headerData.clear()
+    if (list != null && list.isNotEmpty()) {
+      this.list.addAll(list)
+    }
+    if (headerData != null && headerData.isNotEmpty()) {
+      this.headerData.addAll(headerData)
+    }
+    dataSize = this.list.size + this.headerData.size//重置数据长度
+    headerSize = this.headerData.size
+    notifyDataSetChanged()
+  }
+
+  fun refreshData(list: List<Any>?) {
+    refreshData(list, null)
   }
 
   fun setOnItemClickListener(onItemClickListener: OnItemClickListener) {
@@ -141,10 +174,10 @@ class CustomAdapter(@NonNull private val context: Context, @NonNull layoutRes: I
   }
 
   interface OnItemClickListener {
-    fun onItemClick(view: View)
+    fun onItemClick(view: View, data: Any?)
   }
 
   interface OnHeaderClickListener {
-    fun onHeaderClick(view: View)
+    fun onHeaderClick(view: View, data: Any?)
   }
 }

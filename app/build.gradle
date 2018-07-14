@@ -72,5 +72,4 @@ dependencies {
   //9
   implementation project(':module-core')
   implementation "com.android.support:cardview-v7:$appcompatVersion"
-  //implementation 'com.github.qdxxxx:StickyHeaderDecoration:1.0.1'
 }
