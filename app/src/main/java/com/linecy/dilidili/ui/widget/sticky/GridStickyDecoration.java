@@ -76,8 +76,8 @@ public class GridStickyDecoration extends LinearStickyDecoration {
   }
 
   @Override protected void startCollision(RecyclerView parent, Canvas c, View child, int left,
-      int childPosition) {
-    int bottom = child.getBottom() + child.getPaddingBottom();
+      int bottomMargin, int childPosition) {
+    int bottom = child.getBottom() + bottomMargin;
     GroupInfo info = lastRows.get(childPosition, null);
     if (bottom < headerHeight && null != info) {
       c.save();

@@ -8,6 +8,7 @@ import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
+import com.linecy.banner.listener.OnBannerClickListener
 import com.linecy.dilidili.R
 import com.linecy.dilidili.data.model.Banner
 import com.linecy.dilidili.data.model.Cartoon
@@ -19,8 +20,6 @@ import com.linecy.dilidili.ui.home.adapter.CartoonAdapter
 import com.linecy.dilidili.ui.misc.ViewContainer
 import com.linecy.dilidili.ui.play.PlayActivity
 import com.linecy.dilidili.ui.search.SearchActivity
-import com.linecy.dilidili.utils.GlideImageLoader
-import com.youth.banner.BannerConfig
 import kotlinx.android.synthetic.main.fragment_home.appBarLayout
 import kotlinx.android.synthetic.main.fragment_home.bannerView
 import kotlinx.android.synthetic.main.fragment_home.fab
@@ -33,7 +32,7 @@ import javax.inject.Inject
 
 class HomeFragment : BaseFragment<ViewDataBinding>(), HomeView,
     SwipeRefreshLayout.OnRefreshListener, AppBarLayout.OnOffsetChangedListener,
-    ViewContainer.OnReloadCallBack {
+    ViewContainer.OnReloadCallBack, OnBannerClickListener<Banner> {
 
   @Inject
   lateinit var presenter: HomePresenter
@@ -54,15 +53,8 @@ class HomeFragment : BaseFragment<ViewDataBinding>(), HomeView,
     swipeLayout.setColorSchemeResources(R.color.colorPrimary)
     swipeLayout.setOnRefreshListener(this)
     appBarLayout.addOnOffsetChangedListener(this)
-    bannerView.setImageLoader(GlideImageLoader())
-        .setBannerStyle(BannerConfig.NUM_INDICATOR_TITLE)
-        .setOnBannerListener {
-          val banner = (bannerView.getTag() as List<Banner>)[it]
-          val intent = Intent(activity, PlayActivity::class.java)
-          intent.putExtra(PlayActivity.EXTRA_CARTOON,
-              Cartoon(title = banner.title, coverUrl = banner.srcUrl, playDetail = banner.linkUrl))
-          startActivity(intent)
-        }
+    bannerView.setupWithBannerCreator(AdCreator())
+        .setOnBannerClickListener(this)
 
     val manager = GridLayoutManager(context, 2)
     recyclerView.layoutManager = manager
@@ -93,6 +85,12 @@ class HomeFragment : BaseFragment<ViewDataBinding>(), HomeView,
     presenter.getHomeData()
   }
 
+  override fun onBannerClick(data: Banner, position: Int) {
+    val intent = Intent(activity, PlayActivity::class.java)
+    intent.putExtra(PlayActivity.EXTRA_CARTOON,
+        Cartoon(title = data.title, coverUrl = data.srcUrl, playDetail = data.linkUrl))
+    startActivity(intent)
+  }
 
   override fun onDestroyView() {
     super.onDestroyView()
@@ -114,11 +112,7 @@ class HomeFragment : BaseFragment<ViewDataBinding>(), HomeView,
 
   override fun showBannerList(banners: List<Banner>?) {
     viewContainer.setDisplayedChildId(R.id.swipeLayout)
-
-    val titles = ArrayList<String?>()
-    banners?.forEach { titles.add(it.title) }
-    bannerView.setTag(banners)
-    bannerView.setBannerTitles(titles).update(banners)
+    bannerView.onRefreshData(banners)
   }
 
   override fun showCartoonList(cartoons: List<Cartoon>?) {

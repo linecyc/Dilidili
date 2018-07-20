@@ -12,24 +12,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
  * @author by linecy.
  */
-public abstract class LinearStickyDecoration extends RecyclerView.ItemDecoration {
+public class LinearStickyDecoration extends RecyclerView.ItemDecoration {
 
   private View headerView;//头
 
   int headerHeight;//头部高
 
   private boolean isCustom;//是否自定义头
+  private boolean isSticky;//是否是粘性头
 
   List<GroupInfo> groups = new ArrayList<>();//保存分组信息
   private SparseArray<GroupInfo> startArr = new SparseArray<>();//分组与起始节点对于关系
   SparseArray<GroupInfo> endSArr = new SparseArray<>();//分组与结束节点对于关系
-  private HashMap<String, View> headerCache = new HashMap<>();//头部缓存
 
   public LinearStickyDecoration(Context context) {
     TextView view = new TextView(context);
@@ -37,6 +36,7 @@ public abstract class LinearStickyDecoration extends RecyclerView.ItemDecoration
     view.setPadding(padding, padding, padding, padding);
     view.setTextColor(0xff4c7ee9);//默认文字颜色
     this.headerView = view;
+    this.isSticky = true;
     this.isCustom = false;
   }
 
@@ -45,6 +45,7 @@ public abstract class LinearStickyDecoration extends RecyclerView.ItemDecoration
       throw new IllegalArgumentException("The header view must not be null.");
     }
     this.headerView = headerView;
+    this.isSticky = true;
     this.isCustom = true;
   }
 
@@ -64,8 +65,8 @@ public abstract class LinearStickyDecoration extends RecyclerView.ItemDecoration
     int left = parent.getLeft() + parent.getPaddingLeft();
     for (int i = 0; i < childCount; i++) {
       View child = parent.getChildAt(i);
-
-      int top = child.getTop();
+      RecyclerView.LayoutParams lp = (RecyclerView.LayoutParams) child.getLayoutParams();
+      int top = child.getTop() - lp.topMargin;
       int pos = parent.getChildAdapterPosition(child);
       if (i > 0) {
         //判断起始位置，因为只有每个分组的起始位置才添加头部
@@ -77,7 +78,17 @@ public abstract class LinearStickyDecoration extends RecyclerView.ItemDecoration
           c.restore();
         }
       } else {
-        startCollision(parent, c, child, left, pos);
+        if (isSticky) {
+          startCollision(parent, c, child, left, lp.bottomMargin, pos);
+        } else {
+          GroupInfo info = startArr.get(pos, null);
+          if (null != info) {
+            c.save();
+            c.translate(left, top - headerHeight);//移动到预留位置
+            drawHeader(parent, c, info);
+            c.restore();
+          }
+        }
       }
     }
   }
@@ -118,7 +129,7 @@ public abstract class LinearStickyDecoration extends RecyclerView.ItemDecoration
   void drawHeader(RecyclerView parent, Canvas c, GroupInfo info) {
 
     if (isCustom) {
-      initHeaderView(headerView, info);//填充数据
+      updateHeaderView(headerView, info);//填充数据
       measureHeader(parent);//填充数据后重新测量View
       headerView.draw(c);
     } else {
@@ -138,7 +149,7 @@ public abstract class LinearStickyDecoration extends RecyclerView.ItemDecoration
    * @param c canvas
    */
   protected void startCollision(RecyclerView parent, Canvas c, View child, int left,
-      int childPosition) {
+      int bottomMargin, int childPosition) {
 
     //碰撞临界点
     //当为分组最后一个，同时子view底部小于头部高度，则平移头部，否则悬浮在顶部
@@ -177,12 +188,11 @@ public abstract class LinearStickyDecoration extends RecyclerView.ItemDecoration
   }
 
   /**
-   * 自定义header需要自己实现布局
+   * 自定义header需要自己更新布局
    *
    * @param headerView 头部
-   * @param info 当前头部分组信息
    */
-  public void initHeaderView(View headerView, GroupInfo info) {
+  public void updateHeaderView(View headerView, GroupInfo info) {
     //empty
   }
 
@@ -195,7 +205,6 @@ public abstract class LinearStickyDecoration extends RecyclerView.ItemDecoration
     this.groups.clear();
     this.startArr.clear();
     this.endSArr.clear();
-    this.headerCache.clear();
     if (list != null && list.size() > 0) {
       this.groups.addAll(list);
     }
@@ -239,6 +248,15 @@ public abstract class LinearStickyDecoration extends RecyclerView.ItemDecoration
     if (this.headerView instanceof TextView) {
       ((TextView) this.headerView).setTextColor(color);
     }
+  }
+
+  /**
+   * 是否是粘性头部
+   *
+   * @param isSticky 是否粘性
+   */
+  public void setSticky(boolean isSticky) {
+    this.isSticky = isSticky;
   }
 
   public static int dip2px(Context context, float dpValue) {

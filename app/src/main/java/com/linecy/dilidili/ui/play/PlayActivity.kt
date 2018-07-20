@@ -6,6 +6,7 @@ import android.databinding.ViewDataBinding
 import android.graphics.Point
 import android.graphics.drawable.AnimationDrawable
 import android.os.Bundle
+import android.os.SystemClock
 import android.support.constraint.ConstraintLayout
 import android.support.v7.widget.GridLayoutManager
 import android.text.TextUtils
@@ -68,8 +69,10 @@ class PlayActivity : BaseActivity<ViewDataBinding>(), PlayView,
   lateinit var settings: Settings
 
   private val SETTING_REQUEST_CODE = 12
+  private val DEFAULT_TIME = 400
   private lateinit var adapter: CartoonSetAdapter
   private var currentLink: String? = null//当前页面链接
+  private var lastClickTime = 0L
 
   override fun layoutResId(): Int {
     return R.layout.activity_play
@@ -93,6 +96,7 @@ class PlayActivity : BaseActivity<ViewDataBinding>(), PlayView,
     videoPlayer.setHardDecode(settings.isHardCodec())
     videoPlayer.setUpWithControlView(this)
     videoPlayer.setOnClickListener(this)
+    layout_play_control.setOnClickListener(this)
     videoPlayer.setUpWithSeekBar(seekBar)
     IjkMediaPlayer.loadLibrariesOnce(null)
     IjkMediaPlayer.native_profileBegin("libijkplayer.so")
@@ -148,6 +152,14 @@ class PlayActivity : BaseActivity<ViewDataBinding>(), PlayView,
       }
       R.id.ivMore -> {
         startActivityForResult(Intent(this, SettingsActivity::class.java), SETTING_REQUEST_CODE)
+      }
+      R.id.videoPlayer, R.id.layout_play_control -> {
+        val current = SystemClock.elapsedRealtime()
+        if (current - lastClickTime > DEFAULT_TIME) {
+          lastClickTime = current
+        } else if (requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+          setFullScreen()
+        }
       }
     }
   }
@@ -266,6 +278,8 @@ class PlayActivity : BaseActivity<ViewDataBinding>(), PlayView,
         tvDuration.text = TimeUtils.formatTime(seekBar.max)
       }
       SimpleIJKVideoPlayer.STATE_COMPLETION -> {
+        //修复刚好在控制层隐藏时播放结束进度没有更新的问题
+        tvCurrent.text = tvDuration.text
         loadLoading(false)
         ivPlayPause.isSelected = false
         //自动换p

@@ -31,11 +31,12 @@
             android:layout_height="wrap_content"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             >
-          <com.youth.banner.Banner
+          <com.linecy.banner.BannerView
               android:id="@+id/bannerView"
               android:layout_width="match_parent"
               android:layout_height="200dp"
               android:layout_marginTop="44dp"
+              app:isShowBothEnds="true"
               />
 
           <android.support.v7.widget.Toolbar
