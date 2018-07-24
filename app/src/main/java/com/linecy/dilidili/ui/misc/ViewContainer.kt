@@ -1,12 +1,13 @@
 package com.linecy.dilidili.ui.misc
 
 import android.content.Context
-import android.support.constraint.ConstraintLayout
 import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import com.linecy.dilidili.R
+import kotlinx.android.synthetic.main.layout_empty.view.empty
+import kotlinx.android.synthetic.main.layout_error.view.error
 
 /**
  * 空数据、错误、正常三页面切换控制器。
@@ -35,17 +36,27 @@ class ViewContainer(context: Context, attrs: AttributeSet?) : BatterViewAnimator
 
   override fun onFinishInflate() {
     super.onFinishInflate()
-    findViewById<ConstraintLayout>(R.id.error).setOnClickListener {
-      if (onReloadCallBack != null) {
-        setDisplayedChildId(R.id.layoutNull)
+    error.visibility = View.GONE
+    empty.visibility = View.GONE
+  }
+
+  override fun setDisplayedChildId(id: Int) {
+    super.setDisplayedChildId(id)
+    when (id) {
+      R.id.error -> {
+        error.visibility = View.VISIBLE
+        this.error.setOnClickListener {
+          onReloadCallBack?.onReload()
+          error.visibility = View.GONE
+        }
       }
-      onReloadCallBack?.onReload()
-    }
-    findViewById<ConstraintLayout>(R.id.empty).setOnClickListener {
-      if (onEmptyCallback != null) {
-        setDisplayedChildId(R.id.layoutNull)
+      R.id.empty -> {
+        empty.visibility = View.VISIBLE
+        this.empty.setOnClickListener {
+          onEmptyCallback?.onEmpty()
+          empty.visibility = View.GONE
+        }
       }
-      onEmptyCallback?.onEmpty()
     }
   }
 

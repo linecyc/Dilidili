@@ -135,7 +135,6 @@ class SearchActivity : BaseActivity<ViewDataBinding>(), SearchView,
       if (actionId == EditorInfo.IME_ACTION_SEARCH) {
         val content = etSearch.text.toString()
         if (!TextUtils.isEmpty(content)) {
-          viewContainer.setDisplayedChildId(R.id.layoutNull)
           searchPresenter.search(content)
           val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
           imm.hideSoftInputFromWindow(currentFocus.windowToken,

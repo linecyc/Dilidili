@@ -5,7 +5,6 @@
     android:background="@color/white"
     >
 
-  <include layout="@layout/layout_null"/>
   <include layout="@layout/layout_error"/>
   <include layout="@layout/layout_empty"/>
 

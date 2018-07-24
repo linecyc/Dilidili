@@ -45,7 +45,6 @@ class HomeFragment : BaseFragment<ViewDataBinding>(), HomeView,
     return R.layout.fragment_home
   }
 
-  @Suppress("UNCHECKED_CAST")
   override fun onInitView(savedInstanceState: Bundle?) {
 
     delegatePresenter(presenter, this)
@@ -54,6 +53,7 @@ class HomeFragment : BaseFragment<ViewDataBinding>(), HomeView,
     swipeLayout.setOnRefreshListener(this)
     appBarLayout.addOnOffsetChangedListener(this)
     bannerView.setupWithBannerCreator(AdCreator())
+        .setScaleCover(true)
         .setOnBannerClickListener(this)
 
     val manager = GridLayoutManager(context, 2)

@@ -11,7 +11,7 @@ abstract class BatterViewAnimator(context: Context, attrs: AttributeSet?) : View
     context, attrs) {
 
 
-  fun setDisplayedChildId(id: Int) {
+  open fun setDisplayedChildId(id: Int) {
     if (getDisplayedChildId() == id) {
       return
     }
