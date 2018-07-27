@@ -68,8 +68,8 @@ class PlayActivity : BaseActivity<ViewDataBinding>(), PlayView,
   @Inject
   lateinit var settings: Settings
 
-  private val SETTING_REQUEST_CODE = 12
-  private val DEFAULT_TIME = 400
+  private val _settingRequestCode = 12
+  private val _defaultTime = 400
   private lateinit var adapter: CartoonSetAdapter
   private var currentLink: String? = null//当前页面链接
   private var lastClickTime = 0L
@@ -151,11 +151,11 @@ class PlayActivity : BaseActivity<ViewDataBinding>(), PlayView,
         ivLock.isSelected = !ivLock.isSelected
       }
       R.id.ivMore -> {
-        startActivityForResult(Intent(this, SettingsActivity::class.java), SETTING_REQUEST_CODE)
+        startActivityForResult(Intent(this, SettingsActivity::class.java), _settingRequestCode)
       }
       R.id.videoPlayer, R.id.layout_play_control -> {
         val current = SystemClock.elapsedRealtime()
-        if (current - lastClickTime > DEFAULT_TIME) {
+        if (current - lastClickTime > _defaultTime) {
           lastClickTime = current
         } else if (requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
           setFullScreen()
@@ -197,7 +197,7 @@ class PlayActivity : BaseActivity<ViewDataBinding>(), PlayView,
   }
 
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    if (requestCode == SETTING_REQUEST_CODE) {
+    if (requestCode == _settingRequestCode) {
       videoPlayer.setHardDecode(settings.isHardCodec())
       if (videoPlayer.getPlayState() == SimpleIJKVideoPlayer.STATE_COMPLETION) {
         if (settings.isAutoPlayNext()) {

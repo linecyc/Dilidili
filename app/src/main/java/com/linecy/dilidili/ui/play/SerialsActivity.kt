@@ -102,7 +102,6 @@ class SerialsActivity : BaseActivity<ActivitySerialsBinding>(), SerialsView,
         intArrayOf(BR.itemRecommendCartoon))
     page3Adapter.setOnItemClickListener(onItemClickListener = object : CustomAdapter.OnItemClickListener {
       override fun onItemClick(view: View, data: Any?) {
-        //fixme 点击推荐是重新刷新还是再次跳转呢
         val intent = Intent(this@SerialsActivity, SerialsActivity::class.java)
         intent.putExtra(SerialsActivity.EXTRA_DATA, (data as Cartoon).playDetail)
         startActivity(intent)

@@ -8,8 +8,6 @@ interface IMediaController {
   fun onHide()
 
   fun onShow()
-  //fixme changed update 两接口是否能合并？
-  //fun onSeekUpdate(seek: Long, isShowing: Boolean)
 
   fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean, isShowing: Boolean)
 

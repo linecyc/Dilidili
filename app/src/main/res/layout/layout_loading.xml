@@ -9,7 +9,6 @@
       android:layout_width="80dp"
       android:layout_height="80dp"
       android:background="@android:color/transparent"
-      android:visibility="invisible"
       app:fix_round_cornor="5"
       app:half_rect_width="10dp"
       app:is_clockwise="false"

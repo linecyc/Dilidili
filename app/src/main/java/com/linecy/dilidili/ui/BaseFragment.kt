@@ -27,11 +27,11 @@ abstract class BaseFragment<VB : ViewDataBinding> : Fragment() {
   @Inject
   lateinit var toaster: Toaster
 
-  private val rxPresenter = object : RxPresenter<BaseView>() {}
+  private val rxPresenter: RxPresenter<BaseView> = object : RxPresenter<BaseView>() {}
   private val rxPresenterDelegate = RxPresenterDelegate(rxPresenter)
   protected var fragmentBinding: VB? = null
   private var dialog: AlertDialog? = null
-  private lateinit var squareView: RollSquareView
+  private var squareView: RollSquareView? = null
 
   @Suppress("UNCHECKED_CAST")
   protected fun delegatePresenter(presenter: Presenter<*>, view: BaseView) {
@@ -95,21 +95,12 @@ abstract class BaseFragment<VB : ViewDataBinding> : Fragment() {
   }
 
   private fun loadingDialog() {
-
     if (dialog == null) {
-      val builder = AlertDialog.Builder(context!!, R.style.dialog)
-      dialog = builder.create()
-      val view = LayoutInflater.from(context).inflate(R.layout.layout_loading, null)
-      squareView = view.findViewById(R.id.rollSquareView)
-      squareView.visibility = View.VISIBLE
-      dialog?.setView(view, 200, 200, 200, 200)
+      dialog = AlertDialog.Builder(context!!, R.style.dialog)
+          .setView(R.layout.layout_loading)
+          .create()
       dialog?.setCancelable(false)
-      dialog?.show()
-    } else {
-      if (View.VISIBLE != squareView.visibility) {
-        squareView.visibility = View.VISIBLE
-      }
-      dialog?.show()
     }
+    dialog?.show()
   }
 }

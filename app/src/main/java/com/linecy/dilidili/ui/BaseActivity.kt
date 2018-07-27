@@ -7,7 +7,6 @@ import android.support.annotation.StringRes
 import android.support.constraint.ConstraintLayout
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
-import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
 import android.widget.ImageButton
@@ -33,8 +32,9 @@ abstract class BaseActivity<VB : ViewDataBinding> : AppCompatActivity(), OnClick
 
   @Inject
   lateinit var toaster: Toaster
-
-  private val rxPresenter = object : RxPresenter<BaseView>() {}
+  //申明rxPresenter的类型以解决编译时抛该问题
+  //UnsupportedOperationException:NotFoundClasses
+  private val rxPresenter: RxPresenter<BaseView> = object : RxPresenter<BaseView>() {}
   private val rxPresenterDelegate = RxPresenterDelegate(rxPresenter)
   protected var mDataBinding: VB? = null
   private var mBaseBinding: LayoutBaseBinding? = null
@@ -43,7 +43,7 @@ abstract class BaseActivity<VB : ViewDataBinding> : AppCompatActivity(), OnClick
   private var mIbHomeAsUp: ImageButton? = null
 
   private var dialog: AlertDialog? = null
-  private lateinit var squareView: RollSquareView
+  private var squareView: RollSquareView? = null
 
   @Suppress("UNCHECKED_CAST")
   protected fun delegatePresenter(presenter: Presenter<*>, view: BaseView) {
@@ -146,23 +146,13 @@ abstract class BaseActivity<VB : ViewDataBinding> : AppCompatActivity(), OnClick
   }
 
   private fun loadingDialog() {
-    if (!this.isFinishing) {
-      if (dialog == null) {
-        val builder = AlertDialog.Builder(this, R.style.dialog)
-        dialog = builder.create()
-        val view = LayoutInflater.from(this).inflate(R.layout.layout_loading, null)
-        squareView = view.findViewById(R.id.rollSquareView)
-        squareView.visibility = View.VISIBLE
-        dialog?.setView(view, 200, 0, 200, 0)
-        dialog?.setCancelable(false)
-        dialog?.show()
-      } else {
-        if (View.VISIBLE != squareView.visibility) {
-          squareView.visibility = View.VISIBLE
-        }
-        dialog?.show()
-      }
+    if (dialog == null) {
+      dialog = AlertDialog.Builder(this, R.style.dialog)
+          .setView(R.layout.layout_loading)
+          .create()
+      dialog?.setCancelable(false)
     }
+    dialog?.show()
   }
 
 }

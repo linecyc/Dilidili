@@ -45,16 +45,20 @@ class ViewContainer(context: Context, attrs: AttributeSet?) : BatterViewAnimator
     when (id) {
       R.id.error -> {
         error.visibility = View.VISIBLE
-        this.error.setOnClickListener {
-          onReloadCallBack?.onReload()
-          error.visibility = View.GONE
+        if (onReloadCallBack != null) {
+          error.setOnClickListener {
+            error.visibility = View.GONE
+            onReloadCallBack?.onReload()
+          }
         }
       }
       R.id.empty -> {
         empty.visibility = View.VISIBLE
-        this.empty.setOnClickListener {
-          onEmptyCallback?.onEmpty()
-          empty.visibility = View.GONE
+        if (onEmptyCallback != null) {
+          empty.setOnClickListener {
+            onEmptyCallback?.onEmpty()
+            empty.visibility = View.GONE
+          }
         }
       }
     }

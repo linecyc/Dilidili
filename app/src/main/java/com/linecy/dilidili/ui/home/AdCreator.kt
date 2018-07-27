@@ -7,7 +7,6 @@ import com.linecy.banner.BannerCreator
 import com.linecy.dilidili.R
 import com.linecy.dilidili.data.model.Banner
 import com.linecy.dilidili.di.module.GlideApp
-import com.linecy.dilidili.ui.misc.GlideRoundTransform
 
 /**
  * @author by linecy.
@@ -22,10 +21,9 @@ class AdCreator : BannerCreator<Banner> {
       val ivCover = view?.findViewById<ImageView>(R.id.ivCover)
       view?.findViewById<TextView>(R.id.tvDetail)?.text = data.title
       ivCover?.let {
-        GlideApp.with(ivCover.context)
+        GlideApp.with(it.context)
             .load(data.srcUrl)
-            .transform(GlideRoundTransform())
-            .into(ivCover)
+            .into(it)
       }
     }
   }

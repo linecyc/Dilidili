@@ -8,7 +8,7 @@ import android.preference.PreferenceManager
  * @author by linecy.
  */
 
-class Settings(private val context: Context) {
+class Settings(context: Context) {
   private var sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(
       context)
 

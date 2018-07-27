@@ -2,6 +2,9 @@ package com.linecy.dilidili.ui.widget
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.media.AudioManager
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
@@ -16,11 +19,11 @@ import android.widget.FrameLayout
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import com.linecy.dilidili.ui.misc.ijk.IMediaController
-import timber.log.Timber
 import tv.danmaku.ijk.media.player.IMediaPlayer
 import tv.danmaku.ijk.media.player.IjkMediaPlayer
 import java.io.IOException
 import java.lang.ref.WeakReference
+
 
 /**
  * 视频播放器
@@ -303,12 +306,10 @@ class SimpleIJKVideoPlayer : FrameLayout {
 
         }
       }
-      Timber.i("-------->>onInfo---p1=$p1------>p2=$p2--------duration:${player?.duration}")
       return@setOnInfoListener false
     }
     mMediaPlayer?.setOnErrorListener { _, p1, p2 ->
       sendPlayState(STATE_ERROR)
-      Timber.i("-------->>OnError-----p1:$p1-----p2:$p2")
       return@setOnErrorListener false
     }
 
@@ -433,10 +434,12 @@ class SimpleIJKVideoPlayer : FrameLayout {
    * 释放
    */
   fun onRelease() {
-    onStop()
-    mMediaPlayer?.reset()
-    mMediaPlayer?.release()
-    mMediaPlayer = null
+    if (null != mMediaPlayer) {
+      onStop()
+      mMediaPlayer?.reset()
+      mMediaPlayer?.release()
+      mMediaPlayer = null
+    }
     sendPlayState(STATE_RELEASE)
   }
 
@@ -452,7 +455,15 @@ class SimpleIJKVideoPlayer : FrameLayout {
    * 停止
    */
   fun onStop() {
-    mMediaPlayer?.stop()
+    if (null != mMediaPlayer) {
+      mMediaPlayer?.stop()
+      val am = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+      if (VERSION.SDK_INT >= VERSION_CODES.O) {
+        am.abandonAudioFocusRequest(null)
+      } else {
+        am.abandonAudioFocus(null)
+      }
+    }
     realCurrent = 0
     sendPlayState(STATE_STOP)
   }
