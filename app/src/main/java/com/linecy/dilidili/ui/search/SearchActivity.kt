@@ -69,7 +69,9 @@ class SearchActivity : BaseActivity<ViewDataBinding>(), SearchView,
           if (adapter.hasMore()) {
             searchPresenter.loadMore(adapter.getNextPage())
           } else {
-            adapter.notifyItemChanged(adapter.itemCount - 1)
+            recyclerView?.post {
+              adapter.notifyItemChanged(adapter.itemCount - 1)
+            }
           }
         }
       }

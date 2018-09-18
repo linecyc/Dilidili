@@ -30,8 +30,14 @@ class SearchPresenter @Inject constructor(
         observableResult(searchRepository.search(content), 0).subscribeOn(Schedulers.io())
             .observeOn(
                 AndroidSchedulers.mainThread()).subscribeBy({
-              baseView?.hideLoading()
-              baseView?.showResult(it)
+              //过滤后数据为null时，继续加载下一页
+              //极端情况下可能需要加载到最后一页才行？？
+              if (it.list?.size == 0 && it.totalPage > 0) {
+                loadMore(it.currentPage + 1, true)
+              } else {
+                baseView?.hideLoading()
+                baseView?.showResult(it)
+              }
             }, {
               baseView?.hideLoading()
               baseView?.showError()
@@ -39,7 +45,7 @@ class SearchPresenter @Inject constructor(
   }
 
 
-  fun loadMore(next: Int) {
+  fun loadMore(next: Int, isInit: Boolean = false) {
     if (isLoading) {
       return
     }
@@ -49,9 +55,19 @@ class SearchPresenter @Inject constructor(
             Schedulers.io())
             .observeOn(
                 AndroidSchedulers.mainThread()).subscribeBy({
-              baseView?.hideLoading()
-              baseView?.showMore(it)
-              isLoading = false
+              //过滤后数据为null时，继续加载下一页
+              if (it.list?.size == 0 && it.currentPage + 1 < it.totalPage) {
+                isLoading = false
+                loadMore(it.currentPage + 1, isInit)
+              } else {
+                baseView?.hideLoading()
+                if (isInit) {
+                  baseView?.showResult(it)
+                } else {
+                  baseView?.showMore(it)
+                }
+                isLoading = false
+              }
             }, {
               baseView?.hideLoading()
               isLoading = false

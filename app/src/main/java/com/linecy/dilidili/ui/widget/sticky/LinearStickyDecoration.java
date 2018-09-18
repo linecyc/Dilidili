@@ -36,7 +36,6 @@ public class LinearStickyDecoration extends RecyclerView.ItemDecoration {
     view.setPadding(padding, padding, padding, padding);
     view.setTextColor(0xff4c7ee9);//默认文字颜色
     this.headerView = view;
-    this.isSticky = true;
     this.isCustom = false;
   }
 
@@ -45,7 +44,6 @@ public class LinearStickyDecoration extends RecyclerView.ItemDecoration {
       throw new IllegalArgumentException("The header view must not be null.");
     }
     this.headerView = headerView;
-    this.isSticky = true;
     this.isCustom = true;
   }
 
@@ -163,11 +161,19 @@ public class LinearStickyDecoration extends RecyclerView.ItemDecoration {
         break;
       }
     }
+    View currEndView;//当前分组的最后一个view
     //GroupInfo info = endSArr.get(pos, null);//是否是最后一个节点
     //分组节点的结束位置是不包含的，所以减1
-    if ((end - childPosition == 1) && child.getBottom() <= headerHeight) {
+    if (end - childPosition == 1 && child.getBottom() <= headerHeight) {
       c.save();
       c.translate(left, child.getBottom() - headerHeight);
+      drawHeader(parent, c, groups.get(count));
+      c.restore();
+    } else if (child.getHeight() < headerHeight
+        && null != (currEndView = parent.getChildAt(end - (childPosition + 1)))
+        && currEndView.getBottom() <= headerHeight) {//修复item高度小于头部，导致碰撞时没有顶出上一个头部的问题
+      c.save();
+      c.translate(left, currEndView.getBottom() - headerHeight);
       drawHeader(parent, c, groups.get(count));
       c.restore();
     } else {
